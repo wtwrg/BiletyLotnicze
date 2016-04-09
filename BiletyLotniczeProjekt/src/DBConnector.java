@@ -2,10 +2,7 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-/**
- *
- * @author Amarylis
- */
+
 class DBConnector 
 {
     private final static String DBURL = "jdbc:mysql://localhost:3306/loty";
