@@ -8,12 +8,12 @@
  *
  * @author Amarylis
  */
-public class PanelLogowania extends javax.swing.JFrame {
+public class PanelLogowaniaJustyna extends javax.swing.JFrame {
 
     /**
      * Creates new form PanelLogowania
      */
-    public PanelLogowania() {
+    public PanelLogowaniaJustyna() {
         initComponents();
     }
 
@@ -38,7 +38,6 @@ public class PanelLogowania extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setPreferredSize(new java.awt.Dimension(600, 400));
         setResizable(false);
         setSize(new java.awt.Dimension(600, 400));
 
@@ -147,20 +146,21 @@ public class PanelLogowania extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PanelLogowania.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PanelLogowaniaJustyna.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PanelLogowania.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PanelLogowaniaJustyna.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PanelLogowania.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PanelLogowaniaJustyna.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PanelLogowania.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PanelLogowaniaJustyna.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PanelLogowania().setVisible(true);
+                new PanelLogowaniaJustyna().setVisible(true);
             }
         });
     }
