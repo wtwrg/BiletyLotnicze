@@ -1,4 +1,9 @@
+package Narzedzia;
 
+
+import Beany.SamolotBean;
+import Beany.LotniskoBean;
+import Beany.LotyBean;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

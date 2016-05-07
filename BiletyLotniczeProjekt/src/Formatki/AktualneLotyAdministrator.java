@@ -1,3 +1,5 @@
+package Formatki;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -39,7 +41,6 @@ public class AktualneLotyAdministrator extends javax.swing.JFrame {
         jMenu5 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(900, 600));
         setResizable(false);
         setSize(new java.awt.Dimension(900, 600));
 
@@ -128,8 +129,6 @@ public class AktualneLotyAdministrator extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(65, Short.MAX_VALUE))
         );
-
-        jButton32.getAccessibleContext().setAccessibleName("Edytuj");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

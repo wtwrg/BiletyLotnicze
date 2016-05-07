@@ -1,18 +1,12 @@
+package Beany;
+
 
 import java.sql.Date;
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author Amarylis
- */
 public class LotyBean 
 {
+    public static final String ODLOT = "O";
+    public static final String PRZYLOT = "P";
+    
     Integer lotID;
     String odlotPrzylot;
     float cenaKlasyEkonomicznej;

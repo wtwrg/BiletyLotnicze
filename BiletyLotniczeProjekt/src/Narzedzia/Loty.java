@@ -1,4 +1,9 @@
+package Narzedzia;
 
+
+import Beany.SamolotBean;
+import Beany.LotniskoBean;
+import Beany.LotyBean;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,7 +38,7 @@ public class Loty
     ResultSet rs = null;
     NarzedziaBazyDanych narzedziaBazyDanych = null;
     
-    Loty()
+    public Loty()
     {
         dbConnector = new DBConnector();
         narzedziaBazyDanych = new NarzedziaBazyDanych();

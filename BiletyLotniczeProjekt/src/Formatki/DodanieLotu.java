@@ -1,3 +1,5 @@
+package Formatki;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -39,7 +41,6 @@ public class DodanieLotu extends javax.swing.JFrame {
         jComboBox4 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(900, 600));
         setSize(new java.awt.Dimension(900, 600));
 
         jLabel1.setText("Daty Kalendarza, odlot, przylot, cena, data odlotu i przylotu , lotnisko samolot z listy");

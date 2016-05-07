@@ -1,3 +1,5 @@
+package Formatki;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -65,7 +67,6 @@ public class Rejestracja extends javax.swing.JFrame {
         jPasswordField2 = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(900, 600));
         setResizable(false);
         setSize(new java.awt.Dimension(900, 600));
 
@@ -238,8 +239,6 @@ public class Rejestracja extends javax.swing.JFrame {
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jCheckBox1)))
         );
-
-        jLabel14.getAccessibleContext().setAccessibleName("Adres email:");
 
         jLabel13.setFont(new java.awt.Font("Calibri", 2, 12)); // NOI18N
         jLabel13.setText("Powtórz hasło:");
