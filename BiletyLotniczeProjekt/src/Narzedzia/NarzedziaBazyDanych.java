@@ -3,7 +3,7 @@ package Narzedzia;
 
 import Beany.SamolotBean;
 import Beany.LotniskoBean;
-import Beany.LotyBean;
+import Beany.LotBean;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,14 +21,14 @@ import java.util.List;
  */
 public class NarzedziaBazyDanych 
 {
-    public List<LotyBean> ustawLoty( ResultSet rs )
+    public List<LotBean> ustawLoty( ResultSet rs )
     {
-        List<LotyBean> listaLotyBean = new ArrayList<LotyBean>();
+        List<LotBean> listaLotyBean = new ArrayList<LotBean>();
         try
         {
             while( rs.next() )
             {
-                LotyBean lotyBean = new LotyBean();
+                LotBean lotyBean = new LotBean();
                 
                 lotyBean.setLotID( rs.getInt( 1 ) );
                 lotyBean.setOdlotPrzylot( rs.getString( 2 ) );

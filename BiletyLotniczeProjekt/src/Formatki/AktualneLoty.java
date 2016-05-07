@@ -72,6 +72,7 @@ public class AktualneLoty extends javax.swing.JFrame {
 
         jCheckBox2.setText("Przylot");
 
+        jCheckBox1.setSelected(true);
         jCheckBox1.setText("Odlot");
 
         jLabel1.setText("Aktualne loty:");

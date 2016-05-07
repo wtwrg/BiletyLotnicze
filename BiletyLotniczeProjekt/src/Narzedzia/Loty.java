@@ -3,7 +3,7 @@ package Narzedzia;
 
 import Beany.SamolotBean;
 import Beany.LotniskoBean;
-import Beany.LotyBean;
+import Beany.LotBean;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,10 +44,10 @@ public class Loty
         narzedziaBazyDanych = new NarzedziaBazyDanych();
     }
     
-    private List<LotyBean> pobierzLoty() throws SQLException
+    private List<LotBean> pobierzLoty() throws SQLException
     {
         connection = dbConnector.setConnection();
-        List<LotyBean> listaLotyBean = new ArrayList<LotyBean>();
+        List<LotBean> listaLotyBean = new ArrayList<LotBean>();
         try
         {
             ps = connection.prepareStatement( POBRANIE_LOTOW );
@@ -118,15 +118,17 @@ public class Loty
     
     public void pokazLoty( String przylotOdlot, String klasa ) throws SQLException
     {
-        List<LotyBean> listaLotyBean = pobierzLoty();
+        List<LotBean> listaLotyBean = pobierzLoty();
         List<LotniskoBean> listaLotniskoBean = pobierzLotniska();
         List<SamolotBean> listaSamolotBean = pobierzSamoloty();
         
-        for( LotyBean lot : listaLotyBean )
+        for( int i=0; i<listaLotyBean.size(); i++  )
         {
+            LotBean lot = listaLotyBean.get( i );
             if( !przylotOdlot.equals( lot.getOdlotPrzylot() ) )
             {
                 listaLotyBean.remove( lot );
+                i--;
             }
         }
     }

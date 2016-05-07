@@ -2,7 +2,7 @@ package Beany;
 
 
 import java.sql.Date;
-public class LotyBean 
+public class LotBean 
 {
     public static final String ODLOT = "O";
     public static final String PRZYLOT = "P";
