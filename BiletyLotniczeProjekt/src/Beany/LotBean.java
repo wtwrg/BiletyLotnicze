@@ -8,124 +8,113 @@ public class LotBean
     public static final String PRZYLOT = "P";
     
     Integer lotID;
-    String odlotPrzylot;
-    float cenaKlasyEkonomicznej;
-    float cenaKlasyEkonomicznejPremium;
-    float cenaKlasyBiznes;
-    float cenaKlasyPierwszej;
-    Date dataOdlotu;
-    Date dataPrzylotu;
-    Integer lotniskoID;
-    Integer samolotID;
+    String lotOdlotPrzylot;
+    float lotCenaKlasyEkonomicznej;
+    float lotCenaKlasyEkonomicznejPremium;
+    float lotCenaKlasyBiznes;
+    float lotCenaKlasyPierwszej;
+    Date lotDataOdlotu;
+    Date lotDataPrzylotu;
+    Integer lotLotniskoID;
+    Integer lotSamolotID;
+    LotniskoBean lotLotniskoBean;
+    SamolotBean lotSamolotBean;
 
-    public String getOdlotPrzylot() {
-        return odlotPrzylot;
-    }
-
-    public void setOdlotPrzylot(String odlotPrzylot) {
-        this.odlotPrzylot = odlotPrzylot;
-    }
-
-    public float getCenaKlasyEkonomicznej() {
-        return cenaKlasyEkonomicznej;
-    }
-
-    public void setCenaKlasyEkonomicznej(float cenaKlasyEkonomicznej) {
-        this.cenaKlasyEkonomicznej = cenaKlasyEkonomicznej;
-    }
-
-    public float getCenaKlasyEkonomicznejPremium() {
-        return cenaKlasyEkonomicznejPremium;
-    }
-
-    public void setCenaKlasyEkonomicznejPremium(float cenaKlasyEkonomicznejPremium) {
-        this.cenaKlasyEkonomicznejPremium = cenaKlasyEkonomicznejPremium;
-    }
-
-    public float getCenaKlasyBiznes() {
-        return cenaKlasyBiznes;
-    }
-
-    public void setCenaKlasyBiznes(float cenaKlasyBiznes) {
-        this.cenaKlasyBiznes = cenaKlasyBiznes;
-    }
-
-    public float getCenaKlasyPierwszej() {
-        return cenaKlasyPierwszej;
-    }
-
-    public void setCenaKlasyPierwszej(float cenaKlasyPierwszej) {
-        this.cenaKlasyPierwszej = cenaKlasyPierwszej;
-    }
-
-    public Date getDataOdlotu() {
-        return dataOdlotu;
-    }
-
-    public void setDataOdlotu(Date dataOdlotu) {
-        this.dataOdlotu = dataOdlotu;
-    }
-
-    public Date getDataPrzylotu() {
-        return dataPrzylotu;
-    }
-
-    public void setDataPrzylotu(Date dataPrzylotu) {
-        this.dataPrzylotu = dataPrzylotu;
-    }
-
-    public Integer getLotniskoID() {
-        return lotniskoID;
-    }
-
-    public void setLotniskoID(Integer lotniskoID) {
-        this.lotniskoID = lotniskoID;
-    }
-
-    public Integer getSamolotID() {
-        return samolotID;
-    }
-
-    public void setSamolotID(Integer samolotID) {
-        this.samolotID = samolotID;
-    }
-    
-    public Integer getLotID() 
-    {
+    public Integer getLotID() {
         return lotID;
     }
 
-    public void setLotID(Integer lotID) 
-    {
+    public void setLotID(Integer lotID) {
         this.lotID = lotID;
     }
-    
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append( "LotyBean: [" );
-        sb.append( "lotID: " );
-        sb.append( lotID );
-        sb.append( "odlotPrzylot: " );
-        sb.append( odlotPrzylot );
-        sb.append( "cenaKlasyEkonomicznej: " );
-        sb.append( cenaKlasyEkonomicznej );
-        sb.append( "cenaKlasyEkonomicznejPremium: " );
-        sb.append( cenaKlasyEkonomicznejPremium );
-        sb.append( "cenaKlasyBiznes: " );
-        sb.append( cenaKlasyBiznes );
-        sb.append( "cenaKlasyPierwszej: " );
-        sb.append( cenaKlasyPierwszej );
-        sb.append( "dataOdlotu: " );
-        sb.append( dataOdlotu );
-        sb.append( "dataOdlotu: " );
-        sb.append( dataPrzylotu );
-        sb.append( "lotniskoID: " );
-        sb.append( lotniskoID );
-        sb.append( "samolotID: " );
-        sb.append( samolotID );
-        
-        return sb.toString();
+
+    public String getLotOdlotPrzylot() {
+        return lotOdlotPrzylot;
     }
+
+    public void setLotOdlotPrzylot(String lotOdlotPrzylot) {
+        this.lotOdlotPrzylot = lotOdlotPrzylot;
+    }
+
+    public float getLotCenaKlasyEkonomicznej() {
+        return lotCenaKlasyEkonomicznej;
+    }
+
+    public void setLotCenaKlasyEkonomicznej(float lotCenaKlasyEkonomicznej) {
+        this.lotCenaKlasyEkonomicznej = lotCenaKlasyEkonomicznej;
+    }
+
+    public float getLotCenaKlasyEkonomicznejPremium() {
+        return lotCenaKlasyEkonomicznejPremium;
+    }
+
+    public void setLotCenaKlasyEkonomicznejPremium(float lotCenaKlasyEkonomicznejPremium) {
+        this.lotCenaKlasyEkonomicznejPremium = lotCenaKlasyEkonomicznejPremium;
+    }
+
+    public float getLotCenaKlasyBiznes() {
+        return lotCenaKlasyBiznes;
+    }
+
+    public void setLotCenaKlasyBiznes(float lotCenaKlasyBiznes) {
+        this.lotCenaKlasyBiznes = lotCenaKlasyBiznes;
+    }
+
+    public float getLotCenaKlasyPierwszej() {
+        return lotCenaKlasyPierwszej;
+    }
+
+    public void setLotCenaKlasyPierwszej(float lotCenaKlasyPierwszej) {
+        this.lotCenaKlasyPierwszej = lotCenaKlasyPierwszej;
+    }
+
+    public Date getLotDataOdlotu() {
+        return lotDataOdlotu;
+    }
+
+    public void setLotDataOdlotu(Date lotDataOdlotu) {
+        this.lotDataOdlotu = lotDataOdlotu;
+    }
+
+    public Date getLotDataPrzylotu() {
+        return lotDataPrzylotu;
+    }
+
+    public void setLotDataPrzylotu(Date lotDataPrzylotu) {
+        this.lotDataPrzylotu = lotDataPrzylotu;
+    }
+
+    public Integer getLotLotniskoID() {
+        return lotLotniskoID;
+    }
+
+    public void setLotLotniskoID(Integer lotLotniskoID) {
+        this.lotLotniskoID = lotLotniskoID;
+    }
+
+    public Integer getLotSamolotID() {
+        return lotSamolotID;
+    }
+
+    public void setLotSamolotID(Integer lotSamolotID) {
+        this.lotSamolotID = lotSamolotID;
+    }
+
+    public LotniskoBean getLotLotniskoBean() {
+        return lotLotniskoBean;
+    }
+
+    public void setLotLotniskoBean(LotniskoBean lotLotniskoBean) {
+        this.lotLotniskoBean = lotLotniskoBean;
+    }
+
+    public SamolotBean getLotSamolotBean() {
+        return lotSamolotBean;
+    }
+
+    public void setLotSamolotBean(SamolotBean lotSamolotBean) {
+        this.lotSamolotBean = lotSamolotBean;
+    }
+
+
 }

@@ -2,9 +2,11 @@ package Formatki;
 
 import Narzedzia.Loty;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
+import javax.swing.table.DefaultTableModel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -68,7 +70,7 @@ public class AktualneLoty extends javax.swing.JFrame {
 
         jLabel2.setText("Wyszukaj lot i zarezerwuj miejsce!");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Klasa Ekonomiczna", "Ekonomiczna Klasa Premium", "Biznes Klasa", "Pierwsza Klasa" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Wszystkie", "Klasa Ekonomiczna", "Ekonomiczna Klasa Premium", "Biznes Klasa", "Pierwsza Klasa" }));
 
         jCheckBox2.setText("Przylot");
 
@@ -79,16 +81,7 @@ public class AktualneLoty extends javax.swing.JFrame {
 
         listaAktualnychLotow.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "Miasto", "Lotnisko", "Linia Lotnicza", "Klasa", "Cena", "Rezerwuj", "Kup"
@@ -198,7 +191,15 @@ public class AktualneLoty extends javax.swing.JFrame {
         Loty loty = new Loty();
         try 
         {
-            loty.pokazLoty( przylotyOdloty, klasa );
+            List<Object[]> listaLotow = loty.pokazLoty( przylotyOdloty, klasa );
+            if( listaLotow!= null )
+            {
+                DefaultTableModel model = (DefaultTableModel) listaAktualnychLotow.getModel();
+                for( Object[] lot : listaLotow )
+                {
+                    model.addRow(lot);
+                }
+            }
         } 
         catch (SQLException ex) 
         {

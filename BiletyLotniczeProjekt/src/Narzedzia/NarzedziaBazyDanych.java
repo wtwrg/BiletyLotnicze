@@ -31,15 +31,15 @@ public class NarzedziaBazyDanych
                 LotBean lotyBean = new LotBean();
                 
                 lotyBean.setLotID( rs.getInt( 1 ) );
-                lotyBean.setOdlotPrzylot( rs.getString( 2 ) );
-                lotyBean.setCenaKlasyEkonomicznej( rs.getFloat( 3 ) );
-                lotyBean.setCenaKlasyEkonomicznejPremium( rs.getFloat( 4 ) );
-                lotyBean.setCenaKlasyBiznes( rs.getFloat( 5 ) );
-                lotyBean.setCenaKlasyPierwszej( rs.getFloat( 6 ) );
-                lotyBean.setDataOdlotu( rs.getDate( 7 ) );
-                lotyBean.setDataPrzylotu( rs.getDate( 8 ) );
-                lotyBean.setLotniskoID( rs.getInt( 9 ) );
-                lotyBean.setSamolotID( rs.getInt( 10 ) );
+                lotyBean.setLotOdlotPrzylot( rs.getString( 2 ) );
+                lotyBean.setLotCenaKlasyEkonomicznej( rs.getFloat( 3 ) );
+                lotyBean.setLotCenaKlasyEkonomicznejPremium( rs.getFloat( 4 ) );
+                lotyBean.setLotCenaKlasyBiznes( rs.getFloat( 5 ) );
+                lotyBean.setLotCenaKlasyPierwszej( rs.getFloat( 6 ) );
+                lotyBean.setLotDataOdlotu( rs.getDate( 7 ) );
+                lotyBean.setLotDataPrzylotu( rs.getDate( 8 ) );
+                lotyBean.setLotLotniskoID( rs.getInt( 9 ) );
+                lotyBean.setLotSamolotID( rs.getInt( 10 ) );
                 
                 listaLotyBean.add( lotyBean );
             }
