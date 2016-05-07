@@ -47,7 +47,7 @@ public class AktualneLoty extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         listaAktualnychLotow = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
-        jButton6 = new javax.swing.JButton();
+        wykonajPrzycisk = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -106,7 +106,12 @@ public class AktualneLoty extends javax.swing.JFrame {
 
         jLabel3.setText("Data lotu:");
 
-        jButton6.setLabel("Wykonaj");
+        wykonajPrzycisk.setLabel("Wykonaj");
+        wykonajPrzycisk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                wykonajPrzyciskActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("Szukaj");
         jMenuBar1.add(jMenu1);
@@ -137,7 +142,7 @@ public class AktualneLoty extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 637, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton6))
+                        .addComponent(wykonajPrzycisk))
                     .addComponent(jLabel1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jCheckBox1)
@@ -167,14 +172,14 @@ public class AktualneLoty extends javax.swing.JFrame {
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(79, 79, 79))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton6)
+                        .addComponent(wykonajPrzycisk)
                         .addGap(104, 104, 104))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void wykonajPrzyciskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wykonajPrzyciskActionPerformed
         // TODO add your handling code here:
         String przylotyOdloty = null;
         String klasa = null;
@@ -198,11 +203,10 @@ public class AktualneLoty extends javax.swing.JFrame {
         {
             Logger.getLogger(AktualneLoty.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_wykonajPrzyciskActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton6;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
@@ -219,5 +223,6 @@ public class AktualneLoty extends javax.swing.JFrame {
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable listaAktualnychLotow;
+    private javax.swing.JButton wykonajPrzycisk;
     // End of variables declaration//GEN-END:variables
 }
