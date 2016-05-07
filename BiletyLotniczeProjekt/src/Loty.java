@@ -20,7 +20,7 @@ public class Loty
 {
     private final static String POBRANIE_LOTOW = "SELECT LOT_ID, LOT_ODLOT_PRZYLOT, LOT_CENA_KLASA_EKONOMICZNA, " +
             "LOT_CENA_KLASA_EKONOMICZNA_PREMIUM, LOT_CENA_KLASA_BIZNES, LOT_CENA_KLASA_PIERWSZA, LOT_DATA_ODLOTU, " +
-            "LOT_DATA_PRZYLOTU, LOT_LOTNISKO_ID, LOT_SAMOLOT_ID FROM LOTY";
+            "LOT_DATA_PRZYLOTU, LOT_LOTNISKO_ID, LOT_SAMOLOT_ID FROM LOTY ";
     
     private final static String POBRANIE_LOTNISK = "SELECT LTN_ID, LTN_KRAJ, LTN_MIASTO, LTN_NAZWA FROM LOTNISKO";
     
@@ -39,7 +39,7 @@ public class Loty
         narzedziaBazyDanych = new NarzedziaBazyDanych();
     }
     
-    public List<LotyBean> pobierzLoty() throws SQLException
+    private List<LotyBean> pobierzLoty() throws SQLException
     {
         connection = dbConnector.setConnection();
         List<LotyBean> listaLotyBean = new ArrayList<LotyBean>();
@@ -63,7 +63,7 @@ public class Loty
         return listaLotyBean;
     }
     
-    public List<LotniskoBean> pobierzLotniska() throws SQLException
+    private List<LotniskoBean> pobierzLotniska() throws SQLException
     {
         connection = dbConnector.setConnection();
         List<LotniskoBean> listaLotniskoBean = new ArrayList<LotniskoBean>();
@@ -87,7 +87,7 @@ public class Loty
         return listaLotniskoBean;
     }
     
-    public List<SamolotBean> pobierzSamolot() throws SQLException
+    private List<SamolotBean> pobierzSamoloty() throws SQLException
     {
         connection = dbConnector.setConnection();
         List<SamolotBean> listaSamolotBean = new ArrayList<SamolotBean>();
@@ -109,5 +109,20 @@ public class Loty
             rs.close();
         }
         return listaSamolotBean;
+    }
+    
+    public void pokazLoty( String przylotOdlot, String klasa ) throws SQLException
+    {
+        List<LotyBean> listaLotyBean = pobierzLoty();
+        List<LotniskoBean> listaLotniskoBean = pobierzLotniska();
+        List<SamolotBean> listaSamolotBean = pobierzSamoloty();
+        
+        for( LotyBean lot : listaLotyBean )
+        {
+            if( !przylotOdlot.equals( lot.getOdlotPrzylot() ) )
+            {
+                listaLotyBean.remove( lot );
+            }
+        }
     }
 }

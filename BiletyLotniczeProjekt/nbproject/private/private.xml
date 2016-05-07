@@ -2,6 +2,15 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/Amarylis/git/BiletyLotnicze/BiletyLotniczeProjekt/src/NarzedziaBazyDanych.java</file>
+            <file>file:/C:/Users/Amarylis/git/BiletyLotnicze/BiletyLotniczeProjekt/src/SamolotBean.java</file>
+            <file>file:/C:/Users/Amarylis/git/BiletyLotnicze/BiletyLotniczeProjekt/src/LotyBean.java</file>
+            <file>file:/C:/Users/Amarylis/git/BiletyLotnicze/BiletyLotniczeProjekt/src/DBConnector.java</file>
+            <file>file:/C:/Users/Amarylis/git/BiletyLotnicze/BiletyLotniczeProjekt/src/LotniskoBean.java</file>
+            <file>file:/C:/Users/Amarylis/git/BiletyLotnicze/BiletyLotniczeProjekt/src/AktualneLoty.java</file>
+            <file>file:/C:/Users/Amarylis/git/BiletyLotnicze/BiletyLotniczeProjekt/src/Loty.java</file>
+            <file>file:/C:/Users/Amarylis/git/BiletyLotnicze/BiletyLotniczeProjekt/src/Logowanie.java</file>
+        </group>
     </open-files>
 </project-private>

@@ -1,3 +1,9 @@
+
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ButtonGroup;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -15,6 +21,9 @@ public class AktualneLoty extends javax.swing.JFrame {
      */
     public AktualneLoty() {
         initComponents();
+        ButtonGroup przylotyOdloty = new ButtonGroup();
+        przylotyOdloty.add( jCheckBox1 );
+        przylotyOdloty.add( jCheckBox2 );
     }
 
     /**
@@ -57,6 +66,7 @@ public class AktualneLoty extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
+        jButton6 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -71,7 +81,6 @@ public class AktualneLoty extends javax.swing.JFrame {
         jRadioButtonMenuItem1.setText("jRadioButtonMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(900, 600));
         setResizable(false);
         setSize(new java.awt.Dimension(900, 600));
 
@@ -250,6 +259,13 @@ public class AktualneLoty extends javax.swing.JFrame {
 
         jLabel3.setText("Data lotu:");
 
+        jButton6.setText("jButton6");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
         jMenu1.setText("Szukaj");
         jMenuBar1.add(jMenu1);
 
@@ -286,7 +302,9 @@ public class AktualneLoty extends javax.swing.JFrame {
                         .addGap(10, 10, 10)
                         .addComponent(jCheckBox2)
                         .addGap(18, 18, 18)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(148, 148, 148)
+                        .addComponent(jButton6)))
                 .addContainerGap(83, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -302,7 +320,8 @@ public class AktualneLoty extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jCheckBox1)
                             .addComponent(jCheckBox2)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton6))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
@@ -315,6 +334,32 @@ public class AktualneLoty extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        String przylotyOdloty = null;
+        String klasa = null;
+        
+        if( jCheckBox1.isSelected() )
+        {
+            przylotyOdloty = "O";
+        }
+        if( jCheckBox2.isSelected() )
+        {
+            przylotyOdloty = "P";
+        }
+        klasa = (String)jComboBox1.getSelectedItem();
+        
+        Loty loty = new Loty();
+        try 
+        {
+            loty.pokazLoty( przylotyOdloty, klasa );
+        } 
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(AktualneLoty.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -362,6 +407,7 @@ public class AktualneLoty extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
