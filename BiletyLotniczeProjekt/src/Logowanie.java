@@ -169,7 +169,7 @@ public class Logowanie extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AktualneLoty().setVisible(true);
+                new Logowanie().setVisible(true);
             }
         });
     }
