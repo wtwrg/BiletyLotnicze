@@ -85,8 +85,8 @@
                               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                               <Component id="jCheckBox2" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="jComboBox1" min="-2" pref="184" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="160" max="-2" attributes="0"/>
+                              <Component id="klasaComboBox" min="-2" pref="184" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
                               <Component id="wyszukajPrzycisk" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -96,6 +96,10 @@
                       <Component id="jScrollPane2" min="-2" pref="700" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="panelZamowien" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="389" max="-2" attributes="0"/>
+                      <Component id="wykonajPrzycisk" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace pref="59" max="32767" attributes="0"/>
@@ -109,19 +113,12 @@
               <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jCheckBox1" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jCheckBox2" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jComboBox1" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                      <Component id="wyszukajPrzycisk" min="-2" max="-2" attributes="0"/>
-                  </Group>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jCheckBox1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jCheckBox2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="klasaComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="wyszukajPrzycisk" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="35" max="32767" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
@@ -130,7 +127,9 @@
                   <Component id="panelZamowien" max="32767" attributes="0"/>
                   <Component id="jScrollPane2" pref="328" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="wykonajPrzycisk" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -141,15 +140,15 @@
         <Property name="text" type="java.lang.String" value="Wyszukaj lot i zarezerwuj miejsce!"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JComboBox" name="jComboBox1">
+    <Component class="javax.swing.JComboBox" name="klasaComboBox">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="5">
             <StringItem index="0" value="Wszystkie"/>
-            <StringItem index="1" value="Klasa Ekonomiczna"/>
-            <StringItem index="2" value="Ekonomiczna Klasa Premium"/>
-            <StringItem index="3" value="Biznes Klasa"/>
-            <StringItem index="4" value="Pierwsza Klasa"/>
+            <StringItem index="1" value="Ekonomiczna"/>
+            <StringItem index="2" value="Ekonomiczna Premium"/>
+            <StringItem index="3" value="Biznes"/>
+            <StringItem index="4" value="Pierwsza"/>
           </StringArray>
         </Property>
       </Properties>
@@ -286,5 +285,13 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JButton" name="wykonajPrzycisk">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Wykonaj"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="wykonajPrzyciskActionPerformed"/>
+      </Events>
+    </Component>
   </SubComponents>
 </Form>

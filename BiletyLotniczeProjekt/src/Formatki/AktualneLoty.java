@@ -3,9 +3,12 @@ package Formatki;
 import Narzedzia.Loty;
 import java.awt.GridLayout;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.table.DefaultTableModel;
@@ -25,13 +28,19 @@ public class AktualneLoty extends javax.swing.JFrame {
     /**
      * Creates new form AktualneLoty
      */
+    ButtonGroup zamowienia;
+    ButtonGroup przylotyOdloty;
+    List<AbstractButton> listCheckBoxes;
+    
     public AktualneLoty() {
         initComponents();
         jLabel4.setVisible(false);
         jLabel5.setVisible(false);
-        ButtonGroup przylotyOdloty = new ButtonGroup();
+        przylotyOdloty = new ButtonGroup();
         przylotyOdloty.add( jCheckBox1 );
         przylotyOdloty.add( jCheckBox2 );
+        zamowienia = new ButtonGroup();
+        listCheckBoxes = new ArrayList<AbstractButton>();
     }
 
     /**
@@ -46,7 +55,7 @@ public class AktualneLoty extends javax.swing.JFrame {
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         jRadioButtonMenuItem1 = new javax.swing.JRadioButtonMenuItem();
         jLabel2 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        klasaComboBox = new javax.swing.JComboBox<>();
         jCheckBox2 = new javax.swing.JCheckBox();
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
@@ -57,6 +66,7 @@ public class AktualneLoty extends javax.swing.JFrame {
         panelZamowien = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        wykonajPrzycisk = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -77,7 +87,7 @@ public class AktualneLoty extends javax.swing.JFrame {
 
         jLabel2.setText("Wyszukaj lot i zarezerwuj miejsce!");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Wszystkie", "Klasa Ekonomiczna", "Ekonomiczna Klasa Premium", "Biznes Klasa", "Pierwsza Klasa" }));
+        klasaComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Wszystkie", "Ekonomiczna", "Ekonomiczna Premium", "Biznes", "Pierwsza" }));
 
         jCheckBox2.setText("Przylot");
 
@@ -144,6 +154,13 @@ public class AktualneLoty extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
+        wykonajPrzycisk.setText("Wykonaj");
+        wykonajPrzycisk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                wykonajPrzyciskActionPerformed(evt);
+            }
+        });
+
         jMenu1.setText("Szukaj");
         jMenuBar1.add(jMenu1);
 
@@ -178,14 +195,17 @@ public class AktualneLoty extends javax.swing.JFrame {
                                 .addGap(10, 10, 10)
                                 .addComponent(jCheckBox2)
                                 .addGap(18, 18, 18)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(160, 160, 160)
+                                .addComponent(klasaComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(79, 79, 79)
                                 .addComponent(wyszukajPrzycisk))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 700, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(panelZamowien, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(panelZamowien, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(389, 389, 389)
+                        .addComponent(wykonajPrzycisk)))
                 .addContainerGap(59, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -195,23 +215,21 @@ public class AktualneLoty extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addGap(17, 17, 17)
                 .addComponent(jLabel3)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jCheckBox1)
-                            .addComponent(jCheckBox2)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(wyszukajPrzycisk)))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCheckBox1)
+                    .addComponent(jCheckBox2)
+                    .addComponent(klasaComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(wyszukajPrzycisk))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(panelZamowien, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE))
-                .addGap(79, 79, 79))
+                .addGap(18, 18, 18)
+                .addComponent(wykonajPrzycisk)
+                .addGap(38, 38, 38))
         );
 
         pack();
@@ -220,7 +238,7 @@ public class AktualneLoty extends javax.swing.JFrame {
     private void wyszukajPrzyciskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wyszukajPrzyciskActionPerformed
         // TODO add your handling code here:
         String przylotyOdloty = null;
-        String klasa = null;
+        String klasa = (String)klasaComboBox.getSelectedItem();
         
         if( jCheckBox1.isSelected() )
         {
@@ -230,7 +248,7 @@ public class AktualneLoty extends javax.swing.JFrame {
         {
             przylotyOdloty = "P";
         }
-        klasa = (String)jComboBox1.getSelectedItem();
+        klasa = (String)klasaComboBox.getSelectedItem();
         
         Loty loty = new Loty();
 
@@ -245,11 +263,18 @@ public class AktualneLoty extends javax.swing.JFrame {
                 model.removeRow(0);
             }
             
+            for( AbstractButton checkBox : listCheckBoxes )
+            {
+                zamowienia.remove(checkBox);
+                panelZamowien.remove(checkBox);
+            }
+            
+            listCheckBoxes.clear();
+
             if( listaLotow!= null )
             {
                 panelZamowien.setLayout(new GridLayout(0,2, 10, 10));
-                ButtonGroup zamowienia = new ButtonGroup();
-                
+
                 for( int i=0; i<listaLotow.size(); i++ )
                 {
                     Object[] lot = listaLotow.get(i);
@@ -258,6 +283,8 @@ public class AktualneLoty extends javax.swing.JFrame {
                     JCheckBox kup = new JCheckBox();
                     rezerwuj.setName("rezerwuj"+i);
                     kup.setName("kup"+i);
+                    listCheckBoxes.add(rezerwuj);
+                    listCheckBoxes.add(kup);
                     panelZamowien.add(rezerwuj);
                     panelZamowien.add(kup);
                     zamowienia.add(rezerwuj);
@@ -265,8 +292,8 @@ public class AktualneLoty extends javax.swing.JFrame {
                 }
                 jLabel4.setVisible(true);
                 jLabel5.setVisible(true);
-                 panelZamowien.revalidate();
-                 panelZamowien.repaint();
+                panelZamowien.revalidate();
+                panelZamowien.repaint();
             }
         } 
         catch (SQLException ex) 
@@ -275,12 +302,16 @@ public class AktualneLoty extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_wyszukajPrzyciskActionPerformed
 
+    private void wykonajPrzyciskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wykonajPrzyciskActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_wykonajPrzyciskActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -294,8 +325,10 @@ public class AktualneLoty extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JComboBox<String> klasaComboBox;
     private javax.swing.JTable listaAktualnychLotow;
     private javax.swing.JPanel panelZamowien;
+    private javax.swing.JButton wykonajPrzycisk;
     private javax.swing.JButton wyszukajPrzycisk;
     // End of variables declaration//GEN-END:variables
 }

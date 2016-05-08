@@ -13,7 +13,7 @@ package Beany;
 public class SamolotBean 
 {
     public static final String KLASA_EKONOMICZNA = "Ekonomiczna";
-    public static final String KLASA_EKONOMICZNA_PREMIUM = "Ekonomiczna premium";
+    public static final String KLASA_EKONOMICZNA_PREMIUM = "Ekonomiczna Premium";
     public static final String KLASA_BIZNES = "Biznes";
     public static final String KLASA_PIERWSZA = "Pierwsza";
     

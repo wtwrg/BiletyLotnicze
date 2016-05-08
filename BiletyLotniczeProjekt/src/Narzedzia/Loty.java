@@ -202,9 +202,9 @@ public class Loty
                     akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_PIERWSZA, lot.getLotCenaKlasyPierwszej(), lot.getLotDataPrzylotu()};
                     aktualneLoty.add(akutalnyLot);
                 }
-            }
-            
+            } 
         }
+        
         return aktualneLoty;
     }
 }
