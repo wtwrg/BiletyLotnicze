@@ -1,11 +1,15 @@
 package Formatki;
 
 import Narzedzia.Loty;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -25,6 +29,8 @@ public class AktualneLoty extends javax.swing.JFrame {
      */
     public AktualneLoty() {
         initComponents();
+        jLabel4.setVisible(false);
+        jLabel5.setVisible(false);
         ButtonGroup przylotyOdloty = new ButtonGroup();
         przylotyOdloty.add( jCheckBox1 );
         przylotyOdloty.add( jCheckBox2 );
@@ -50,6 +56,9 @@ public class AktualneLoty extends javax.swing.JFrame {
         listaAktualnychLotow = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         wyszukajPrzycisk = new javax.swing.JButton();
+        panelZamowien = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -84,11 +93,11 @@ public class AktualneLoty extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Miasto", "Lotnisko", "Linia Lotnicza", "Klasa", "Cena", "Rezerwuj", "Kup"
+                "Miasto", "Lotnisko", "Linia Lotnicza", "Klasa", "Cena", "Data"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -102,8 +111,6 @@ public class AktualneLoty extends javax.swing.JFrame {
             listaAktualnychLotow.getColumnModel().getColumn(2).setPreferredWidth(20);
             listaAktualnychLotow.getColumnModel().getColumn(3).setPreferredWidth(50);
             listaAktualnychLotow.getColumnModel().getColumn(4).setPreferredWidth(30);
-            listaAktualnychLotow.getColumnModel().getColumn(5).setPreferredWidth(10);
-            listaAktualnychLotow.getColumnModel().getColumn(6).setPreferredWidth(10);
         }
 
         jLabel3.setText("Data lotu:");
@@ -114,6 +121,30 @@ public class AktualneLoty extends javax.swing.JFrame {
                 wyszukajPrzyciskActionPerformed(evt);
             }
         });
+
+        jLabel4.setText("Rezerwuj");
+
+        jLabel5.setText("Kup");
+
+        javax.swing.GroupLayout panelZamowienLayout = new javax.swing.GroupLayout(panelZamowien);
+        panelZamowien.setLayout(panelZamowienLayout);
+        panelZamowienLayout.setHorizontalGroup(
+            panelZamowienLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelZamowienLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addComponent(jLabel5)
+                .addGap(26, 26, 26))
+        );
+        panelZamowienLayout.setVerticalGroup(
+            panelZamowienLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelZamowienLayout.createSequentialGroup()
+                .addGroup(panelZamowienLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
 
         jMenu1.setText("Szukaj");
         jMenuBar1.add(jMenu1);
@@ -151,12 +182,13 @@ public class AktualneLoty extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(160, 160, 160)
-                                .addComponent(wyszukajPrzycisk)))
-                        .addGap(0, 321, Short.MAX_VALUE))
+                                .addComponent(wyszukajPrzycisk))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane2)))
-                .addContainerGap())
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 700, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(panelZamowien, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -178,7 +210,9 @@ public class AktualneLoty extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(panelZamowien, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE))
                 .addGap(79, 79, 79))
         );
 
@@ -201,16 +235,40 @@ public class AktualneLoty extends javax.swing.JFrame {
         klasa = (String)jComboBox1.getSelectedItem();
         
         Loty loty = new Loty();
+
         try 
         {
             List<Object[]> listaLotow = loty.pokazLoty( przylotyOdloty, klasa );
+            DefaultTableModel model = (DefaultTableModel) listaAktualnychLotow.getModel();
+            
+            int rekordy = model.getRowCount();
+            for( int i=0; i < rekordy; i++ )
+            {
+                model.removeRow(0);
+            }
+            
             if( listaLotow!= null )
             {
-                DefaultTableModel model = (DefaultTableModel) listaAktualnychLotow.getModel();
-                for( Object[] lot : listaLotow )
+                panelZamowien.setLayout(new GridLayout(0,2, 10, 10));
+                ButtonGroup zamowienia = new ButtonGroup();
+                
+                for( int i=0; i<listaLotow.size(); i++ )
                 {
+                    Object[] lot = listaLotow.get(i);
                     model.addRow(lot);
+                    JCheckBox rezerwuj = new JCheckBox();
+                    JCheckBox kup = new JCheckBox();
+                    rezerwuj.setName("rezerwuj"+i);
+                    kup.setName("kup"+i);
+                    panelZamowien.add(rezerwuj);
+                    panelZamowien.add(kup);
+                    zamowienia.add(rezerwuj);
+                    zamowienia.add(kup);
                 }
+                jLabel4.setVisible(true);
+                jLabel5.setVisible(true);
+                 panelZamowien.revalidate();
+                 panelZamowien.repaint();
             }
         } 
         catch (SQLException ex) 
@@ -228,6 +286,8 @@ public class AktualneLoty extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -237,6 +297,7 @@ public class AktualneLoty extends javax.swing.JFrame {
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable listaAktualnychLotow;
+    private javax.swing.JPanel panelZamowien;
     private javax.swing.JButton wyszukajPrzycisk;
     // End of variables declaration//GEN-END:variables
 }
