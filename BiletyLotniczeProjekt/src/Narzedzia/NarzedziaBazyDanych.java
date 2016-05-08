@@ -4,8 +4,10 @@ package Narzedzia;
 import Beany.SamolotBean;
 import Beany.LotniskoBean;
 import Beany.LotBean;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +38,8 @@ public class NarzedziaBazyDanych
                 lotyBean.setLotCenaKlasyEkonomicznejPremium( rs.getFloat( 4 ) );
                 lotyBean.setLotCenaKlasyBiznes( rs.getFloat( 5 ) );
                 lotyBean.setLotCenaKlasyPierwszej( rs.getFloat( 6 ) );
-                lotyBean.setLotDataOdlotu( rs.getDate( 7 ) );
-                lotyBean.setLotDataPrzylotu( rs.getDate( 8 ) );
+                lotyBean.setLotDataOdlotu( rs.getString( 7 ) );
+                lotyBean.setLotDataPrzylotu( rs.getString( 8 ) );
                 lotyBean.setLotLotniskoID( rs.getInt( 9 ) );
                 lotyBean.setLotSamolotID( rs.getInt( 10 ) );
                 

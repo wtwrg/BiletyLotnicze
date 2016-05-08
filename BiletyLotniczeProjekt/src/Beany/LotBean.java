@@ -13,8 +13,8 @@ public class LotBean
     float lotCenaKlasyEkonomicznejPremium;
     float lotCenaKlasyBiznes;
     float lotCenaKlasyPierwszej;
-    Date lotDataOdlotu;
-    Date lotDataPrzylotu;
+    String lotDataOdlotu;
+    String lotDataPrzylotu;
     Integer lotLotniskoID;
     Integer lotSamolotID;
     LotniskoBean lotLotniskoBean;
@@ -68,19 +68,19 @@ public class LotBean
         this.lotCenaKlasyPierwszej = lotCenaKlasyPierwszej;
     }
 
-    public Date getLotDataOdlotu() {
+    public String getLotDataOdlotu() {
         return lotDataOdlotu;
     }
 
-    public void setLotDataOdlotu(Date lotDataOdlotu) {
+    public void setLotDataOdlotu(String lotDataOdlotu) {
         this.lotDataOdlotu = lotDataOdlotu;
     }
 
-    public Date getLotDataPrzylotu() {
+    public String getLotDataPrzylotu() {
         return lotDataPrzylotu;
     }
 
-    public void setLotDataPrzylotu(Date lotDataPrzylotu) {
+    public void setLotDataPrzylotu(String lotDataPrzylotu) {
         this.lotDataPrzylotu = lotDataPrzylotu;
     }
 
