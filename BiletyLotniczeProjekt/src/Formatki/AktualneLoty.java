@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -304,7 +305,21 @@ public class AktualneLoty extends javax.swing.JFrame {
 
     private void wykonajPrzyciskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wykonajPrzyciskActionPerformed
         // TODO add your handling code here:
-        
+        String wybranaOpcja = null;
+        Enumeration enumsd = zamowienia.getElements();
+        while( enumsd.hasMoreElements() )
+        {
+            JCheckBox jb = (JCheckBox)enumsd.nextElement();
+            if(jb.isSelected())
+            {
+                wybranaOpcja = jb.getName();
+                break;
+            }
+        }
+        if( wybranaOpcja == null )
+        {
+            JOptionPane.showMessageDialog(this, "Proszę wybrać lot.");
+        }
     }//GEN-LAST:event_wykonajPrzyciskActionPerformed
 
 

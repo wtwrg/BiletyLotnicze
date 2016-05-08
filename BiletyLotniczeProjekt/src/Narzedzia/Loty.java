@@ -159,48 +159,118 @@ public class Loty
             Object[] akutalnyLot = null;
             if( przylotOdlot.equals( LotBean.ODLOT ) )
             {
-                if( lot.getLotCenaKlasyEkonomicznej() != 0 )
+                if( klasa.equals("Wszystkie") )
                 {
-                    akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA, lot.getLotCenaKlasyEkonomicznej(), lot.getLotDataOdlotu() };
-                    aktualneLoty.add(akutalnyLot);
+                    if( lot.getLotCenaKlasyEkonomicznej() != 0 )
+                    {
+                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA, lot.getLotCenaKlasyEkonomicznej(), lot.getLotDataOdlotu() };
+                        aktualneLoty.add(akutalnyLot);
+                    }
+                    if( lot.getLotCenaKlasyEkonomicznejPremium()!= 0 )
+                    {
+                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA_PREMIUM, lot.getLotCenaKlasyEkonomicznejPremium(), lot.getLotDataOdlotu()};
+                        aktualneLoty.add(akutalnyLot);
+                    }
+                    if( lot.getLotCenaKlasyBiznes()!= 0 )
+                    {
+                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_BIZNES, lot.getLotCenaKlasyBiznes(), lot.getLotDataOdlotu()};
+                        aktualneLoty.add(akutalnyLot);
+                    }
+                    if( lot.getLotCenaKlasyPierwszej()!= 0 )
+                    {
+                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_PIERWSZA, lot.getLotCenaKlasyPierwszej(), lot.getLotDataOdlotu()};
+                        aktualneLoty.add(akutalnyLot);
+                    }
                 }
-                if( lot.getLotCenaKlasyEkonomicznejPremium()!= 0 )
+                if( klasa.equals(SamolotBean.KLASA_EKONOMICZNA) )
                 {
-                    akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA_PREMIUM, lot.getLotCenaKlasyEkonomicznejPremium(), lot.getLotDataOdlotu()};
-                    aktualneLoty.add(akutalnyLot);
+                    if( lot.getLotCenaKlasyEkonomicznej() != 0 )
+                    {
+                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA, lot.getLotCenaKlasyEkonomicznej(), lot.getLotDataOdlotu() };
+                        aktualneLoty.add(akutalnyLot);
+                    }
                 }
-                if( lot.getLotCenaKlasyBiznes()!= 0 )
+                if( klasa.equals(SamolotBean.KLASA_EKONOMICZNA_PREMIUM) )
                 {
-                    akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_BIZNES, lot.getLotCenaKlasyBiznes(), lot.getLotDataOdlotu()};
-                    aktualneLoty.add(akutalnyLot);
+                    if( lot.getLotCenaKlasyEkonomicznejPremium()!= 0 )
+                    {
+                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA_PREMIUM, lot.getLotCenaKlasyEkonomicznejPremium(), lot.getLotDataOdlotu()};
+                        aktualneLoty.add(akutalnyLot);
+                    }
                 }
-                if( lot.getLotCenaKlasyPierwszej()!= 0 )
+                if( klasa.equals(SamolotBean.KLASA_BIZNES) )
                 {
-                    akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_PIERWSZA, lot.getLotCenaKlasyPierwszej(), lot.getLotDataOdlotu()};
-                    aktualneLoty.add(akutalnyLot);
+                    if( lot.getLotCenaKlasyBiznes()!= 0 )
+                    {
+                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_BIZNES, lot.getLotCenaKlasyBiznes(), lot.getLotDataOdlotu()};
+                        aktualneLoty.add(akutalnyLot);
+                    }
+                }
+                if( klasa.equals(SamolotBean.KLASA_PIERWSZA) )
+                {
+                    if( lot.getLotCenaKlasyPierwszej()!= 0 )
+                    {
+                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_PIERWSZA, lot.getLotCenaKlasyPierwszej(), lot.getLotDataOdlotu()};
+                        aktualneLoty.add(akutalnyLot);
+                    }
                 }
             }
             else if( przylotOdlot.equals( LotBean.PRZYLOT ) )
             {
-                if( lot.getLotCenaKlasyEkonomicznej() != 0 )
+                if( klasa.equals("Wszystkie") )
                 {
-                    akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA, lot.getLotCenaKlasyEkonomicznej(), lot.getLotDataPrzylotu() };
-                    aktualneLoty.add(akutalnyLot);
+                    if( lot.getLotCenaKlasyEkonomicznej() != 0 )
+                    {
+                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA, lot.getLotCenaKlasyEkonomicznej(), lot.getLotDataPrzylotu() };
+                        aktualneLoty.add(akutalnyLot);
+                    }
+                    if( lot.getLotCenaKlasyEkonomicznejPremium()!= 0 )
+                    {
+                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA_PREMIUM, lot.getLotCenaKlasyEkonomicznejPremium(), lot.getLotDataPrzylotu()};
+                        aktualneLoty.add(akutalnyLot);
+                    }
+                    if( lot.getLotCenaKlasyBiznes()!= 0 )
+                    {
+                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_BIZNES, lot.getLotCenaKlasyBiznes(), lot.getLotDataPrzylotu()};
+                        aktualneLoty.add(akutalnyLot);
+                    }
+                    if( lot.getLotCenaKlasyPierwszej()!= 0 )
+                    {
+                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_PIERWSZA, lot.getLotCenaKlasyPierwszej(), lot.getLotDataPrzylotu()};
+                        aktualneLoty.add(akutalnyLot);
+                    }
                 }
-                if( lot.getLotCenaKlasyEkonomicznejPremium()!= 0 )
+                if( klasa.equals(SamolotBean.KLASA_EKONOMICZNA) )
                 {
-                    akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA_PREMIUM, lot.getLotCenaKlasyEkonomicznejPremium(), lot.getLotDataPrzylotu()};
-                    aktualneLoty.add(akutalnyLot);
+                    if( lot.getLotCenaKlasyEkonomicznej() != 0 )
+                    {
+                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA, lot.getLotCenaKlasyEkonomicznej(), lot.getLotDataPrzylotu() };
+                        aktualneLoty.add(akutalnyLot);
+                    }
                 }
-                if( lot.getLotCenaKlasyBiznes()!= 0 )
+                if( klasa.equals(SamolotBean.KLASA_EKONOMICZNA_PREMIUM) )
                 {
-                    akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_BIZNES, lot.getLotCenaKlasyBiznes(), lot.getLotDataPrzylotu()};
-                    aktualneLoty.add(akutalnyLot);
+                    if( lot.getLotCenaKlasyEkonomicznejPremium()!= 0 )
+                    {
+                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA_PREMIUM, lot.getLotCenaKlasyEkonomicznejPremium(), lot.getLotDataPrzylotu()};
+                        aktualneLoty.add(akutalnyLot);
+                    }
                 }
-                if( lot.getLotCenaKlasyPierwszej()!= 0 )
+                if( klasa.equals(SamolotBean.KLASA_BIZNES) )
                 {
-                    akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_PIERWSZA, lot.getLotCenaKlasyPierwszej(), lot.getLotDataPrzylotu()};
-                    aktualneLoty.add(akutalnyLot);
+                    if( lot.getLotCenaKlasyBiznes()!= 0 )
+                    {
+                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_BIZNES, lot.getLotCenaKlasyBiznes(), lot.getLotDataPrzylotu()};
+                        aktualneLoty.add(akutalnyLot);
+                    }
+                }
+                if( klasa.equals(SamolotBean.KLASA_PIERWSZA) )
+                {
+                    if( lot.getLotCenaKlasyPierwszej()!= 0 )
+                    {
+                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_PIERWSZA, lot.getLotCenaKlasyPierwszej(), lot.getLotDataPrzylotu()};
+                        aktualneLoty.add(akutalnyLot);
+                    }
                 }
             } 
         }
