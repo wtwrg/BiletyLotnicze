@@ -291,12 +291,12 @@ public class Loty
     public Object[] pobierzDostepneRzedy( Object IDLotu ) throws SQLException
     {
         connection = dbConnector.setConnection();
-        String iloscRzedowPS = POBRANIE_RZEDOW.replaceFirst("\\?", String.valueOf(IDLotu));
         Object[] rzedy = null;
         int iloscRzedow = 0;
         try
         {
-            ps = connection.prepareStatement( iloscRzedowPS );
+            ps = connection.prepareStatement( POBRANIE_RZEDOW );
+            ps.setObject(1, IDLotu);
             rs = ps.executeQuery();
             while(rs.next())
             {
@@ -382,9 +382,9 @@ public class Loty
         return miejsca;
     }
     
-    public boolean rezerwujLubKupLot( String wybranaOpcja, Integer IDUzytkownika, String IDLotu, String wybraneMiejsce, String wybranaKlasa, String cena ) throws SQLException
+    public int rezerwujLubKupLot( String wybranaOpcja, Integer IDUzytkownika, String IDLotu, String wybraneMiejsce, String wybranaKlasa, String cena ) throws SQLException
     {
-        boolean isInserted = false;
+        int isInserted = 0;
         try
         {
             connection = dbConnector.setConnection();
@@ -408,24 +408,24 @@ public class Loty
             }
             if( wybranaOpcja.contains("rezerwuj") )
             {
-                lot = REZERWACJA_LOTU.replaceFirst("\\?", String.valueOf(IDUzytkownika));
-                lot = lot.replaceFirst("\\?", IDLotu);
-                lot = lot.replaceFirst("\\?", wybraneMiejsce);
-                lot = lot.replaceFirst("\\?", klasa);
-
+                lot = REZERWACJA_LOTU;
                 ps = connection.prepareStatement( lot );
-                isInserted = ps.execute();
+                ps.setObject(1, IDUzytkownika);
+                ps.setObject(2, IDLotu);
+                ps.setObject(3, wybraneMiejsce);
+                ps.setObject(4, klasa);
+                isInserted = ps.executeUpdate();
             }
             else if( wybranaOpcja.contains("kup") )
             {
-                lot = KUPNO_LOTU.replaceFirst("\\?", String.valueOf(IDUzytkownika));
-                lot = lot.replaceFirst("\\?", IDLotu);
-                lot = lot.replaceFirst("\\?", wybraneMiejsce);
-                lot = lot.replaceFirst("\\?", klasa);
-                lot = lot.replaceFirst("\\?", cena);
-                
+                lot = REZERWACJA_LOTU;
                 ps = connection.prepareStatement( lot );
-                isInserted = ps.execute();
+                ps.setObject(1, IDUzytkownika);
+                ps.setObject(2, IDLotu);
+                ps.setObject(3, wybraneMiejsce);
+                ps.setObject(4, klasa);
+                ps.setObject(5, cena);
+                isInserted = ps.executeUpdate();
             }
         }
         catch( SQLException e )

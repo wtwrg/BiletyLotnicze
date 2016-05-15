@@ -393,8 +393,8 @@ public class AktualneLoty extends javax.swing.JFrame {
                         try 
                         {
                             // TODO : zmienić ID uzytkownika za globalna zmienna, ustawiana przy lgoowaniu
-                            boolean isInserted = loty.rezerwujLubKupLot( wybranaOpcja2, 1, String.valueOf(wybranyLot[0]), wybraneMiejsce, String.valueOf(wybranyLot[4]), String.valueOf(wybranyLot[5]) );
-                            if( isInserted )
+                            int isInserted = loty.rezerwujLubKupLot( wybranaOpcja2, 1, String.valueOf(wybranyLot[0]), wybraneMiejsce, String.valueOf(wybranyLot[4]), String.valueOf(wybranyLot[5]) );
+                            if( isInserted == 1 )
                             {
                                 JOptionPane.showMessageDialog(panelZamowien, "Zlecenie zrealizowane.");
                             }
