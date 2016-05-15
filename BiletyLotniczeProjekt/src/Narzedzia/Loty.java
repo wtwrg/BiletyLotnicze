@@ -378,7 +378,6 @@ public class Loty
         try
         {
             connection = dbConnector.setConnection();
-            String lot = null;
             String klasa = null;
             if( wybranaKlasa.equals( SamolotBean.KLASA_EKONOMICZNA ) )
             {
@@ -398,8 +397,7 @@ public class Loty
             }
             if( wybranaOpcja.contains("rezerwuj") )
             {
-                lot = REZERWACJA_LOTU;
-                ps = connection.prepareStatement( lot );
+                ps = connection.prepareStatement( REZERWACJA_LOTU );
                 ps.setObject(1, IDUzytkownika);
                 ps.setObject(2, IDLotu);
                 ps.setObject(3, wybraneMiejsce);
@@ -408,8 +406,7 @@ public class Loty
             }
             else if( wybranaOpcja.contains("kup") )
             {
-                lot = REZERWACJA_LOTU;
-                ps = connection.prepareStatement( lot );
+                ps = connection.prepareStatement( KUPNO_LOTU );
                 ps.setObject(1, IDUzytkownika);
                 ps.setObject(2, IDLotu);
                 ps.setObject(3, wybraneMiejsce);
@@ -426,7 +423,6 @@ public class Loty
         {
             connection.close();
             ps.close();
-            rs.close();
         }
         return isInserted;
     }

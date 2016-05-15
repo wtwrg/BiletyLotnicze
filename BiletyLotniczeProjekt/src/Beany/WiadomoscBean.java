@@ -3,9 +3,33 @@ package Beany;
 
 import java.sql.Date;
 
-
 public class WiadomoscBean 
 {
+    /*
+    0 - wiadomość tworzona przed administratora
+    1 - nowa rezerwacja/wykupienie lotu
+    2 - anulowanie rezerwacji/wykupienia lotu
+    3 - wygenerowanie nowego potwierdzenia PDF
+    4 - anunlowanie lotu
+    5 - edycja lotu
+    */
+    public static final String WIADOMOSC_TYP_0 = "0";
+    public static final String WIADOMOSC_TYP_1 = "1";
+    public static final String WIADOMOSC_TYP_2 = "2";
+    public static final String WIADOMOSC_TYP_3 = "3";
+    public static final String WIADOMOSC_TYP_4 = "4";
+    public static final String WIADOMOSC_TYP_5 = "5";
+    
+    public static final String WIADOMOSC_ODBIORCA_WSZYSCY_ADMINISTRATORZY = "99";
+    public static final String WIADOMOSC_NADAWCA_SYSTEM = "999";
+    
+    public static final String TEMAT_NOWY_ZAKUP = "Nowy zakup";
+    public static final String TEMAT_NOWA_REZERWACJA = "Nowa rezerwacja";
+    
+    public static final String TRESC_NOWY_ZAKUP_REZERWACJA = "Uzytkownik ID ? dokonał ?.";
+    public static final String TRESC_NOWA_REZERWACJA = "nowej rezerwacji";
+    public static final String TRESC_NOWY_ZAKUP = "nowego zakupu";
+    
     Integer wiadomoscID;
     Integer wiadomoscIDOdbiorcy;
     Integer wiadomoscIDNadawcy;

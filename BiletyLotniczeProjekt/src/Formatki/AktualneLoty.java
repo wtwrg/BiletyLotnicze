@@ -2,6 +2,7 @@ package Formatki;
 
 import Beany.LotBean;
 import Narzedzia.Loty;
+import Narzedzia.Powiadomienia;
 import java.awt.BorderLayout;
 import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
@@ -45,6 +46,7 @@ public class AktualneLoty extends javax.swing.JFrame {
     List<AbstractButton> listCheckBoxes;
     Loty loty;
     List<Object[]> listaLotow;
+    Powiadomienia powiadomienia;
     
     public AktualneLoty() {
         initComponents();
@@ -54,8 +56,9 @@ public class AktualneLoty extends javax.swing.JFrame {
         przylotyOdloty.add( jCheckBox1 );
         przylotyOdloty.add( jCheckBox2 );
         zamowienia = new ButtonGroup();
-        listCheckBoxes = new ArrayList<AbstractButton>();
+        listCheckBoxes = new ArrayList<>();
         loty = new Loty();
+        powiadomienia = new Powiadomienia();
     }
 
     /**
@@ -397,6 +400,7 @@ public class AktualneLoty extends javax.swing.JFrame {
                             if( isInserted == 1 )
                             {
                                 JOptionPane.showMessageDialog(panelZamowien, "Zlecenie zrealizowane.");
+                                powiadomienia.potwierdzenieRezerwacjiKupna( wybranaOpcja2, String.valueOf(1) );
                             }
                             else
                             {
