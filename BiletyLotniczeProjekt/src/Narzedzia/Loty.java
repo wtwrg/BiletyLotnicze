@@ -29,10 +29,6 @@ public class Loty
     
     private final String POBRANIE_ZAJETYCH_MIEJSC = "SELECT ZKP_RZAD_MIEJSCE, RZR_RZAD_MIEJSCE FROM ZAKUPY, REZERWACJE WHERE ZKP_LOT_ID=? AND ZKP_LOT_ID=RZR_LOT_ID";
     
-    private final String REZERWACJA_LOTU = "INSERT INTO rezerwacje (RZR_UZT_ID, RZR_LOT_ID, RZR_DATA, RZR_RZAD_MIEJSCE, RZR_KLASA) VALUES (?,?,NOW(),?,?)";
-    
-    private final String KUPNO_LOTU = "INSERT INTO zakupy (ZKP_UZT_ID, ZKP_LOT_ID, ZKP_DATA, ZKP_RZAD_MIEJSCE, ZKP_KLASA, ZKP_KWOTA) VALUES (?,?,NOW(),?,?,?)";
-
     Connection connection = null;
     DBConnector dbConnector = null;
     PreparedStatement ps = null;
@@ -370,60 +366,5 @@ public class Loty
             rs.close();
         }
         return miejsca;
-    }
-    
-    public int rezerwujLubKupLot( String wybranaOpcja, Integer IDUzytkownika, String IDLotu, String wybraneMiejsce, String wybranaKlasa, String cena ) throws SQLException
-    {
-        int isInserted = 0;
-        try
-        {
-            connection = dbConnector.setConnection();
-            String klasa = null;
-            if( wybranaKlasa.equals( SamolotBean.KLASA_EKONOMICZNA ) )
-            {
-                klasa = "E";
-            }
-            else if( wybranaKlasa.equals( SamolotBean.KLASA_EKONOMICZNA_PREMIUM ) )
-            {
-                klasa = "EP";
-            }
-            else if( wybranaKlasa.equals( SamolotBean.KLASA_BIZNES ) )
-            {
-                klasa = "B";
-            }
-            else if( wybranaKlasa.equals( SamolotBean.KLASA_PIERWSZA ) )
-            {
-                klasa = "P";
-            }
-            if( wybranaOpcja.contains("rezerwuj") )
-            {
-                ps = connection.prepareStatement( REZERWACJA_LOTU );
-                ps.setObject(1, IDUzytkownika);
-                ps.setObject(2, IDLotu);
-                ps.setObject(3, wybraneMiejsce);
-                ps.setObject(4, klasa);
-                isInserted = ps.executeUpdate();
-            }
-            else if( wybranaOpcja.contains("kup") )
-            {
-                ps = connection.prepareStatement( KUPNO_LOTU );
-                ps.setObject(1, IDUzytkownika);
-                ps.setObject(2, IDLotu);
-                ps.setObject(3, wybraneMiejsce);
-                ps.setObject(4, klasa);
-                ps.setObject(5, cena);
-                isInserted = ps.executeUpdate();
-            }
-        }
-        catch( SQLException e )
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            connection.close();
-            ps.close();
-        }
-        return isInserted;
     }
 }

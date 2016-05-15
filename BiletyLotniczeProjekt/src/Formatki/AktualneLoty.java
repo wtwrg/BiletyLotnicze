@@ -3,6 +3,7 @@ package Formatki;
 import Beany.LotBean;
 import Narzedzia.Loty;
 import Narzedzia.Powiadomienia;
+import Narzedzia.Zakupy;
 import java.awt.BorderLayout;
 import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
@@ -47,6 +48,7 @@ public class AktualneLoty extends javax.swing.JFrame {
     Loty loty;
     List<Object[]> listaLotow;
     Powiadomienia powiadomienia;
+    Zakupy zakupy;
     
     public AktualneLoty() {
         initComponents();
@@ -59,6 +61,7 @@ public class AktualneLoty extends javax.swing.JFrame {
         listCheckBoxes = new ArrayList<>();
         loty = new Loty();
         powiadomienia = new Powiadomienia();
+        zakupy = new Zakupy();
     }
 
     /**
@@ -396,15 +399,20 @@ public class AktualneLoty extends javax.swing.JFrame {
                         try 
                         {
                             // TODO : zmienić ID uzytkownika za globalna zmienna, ustawiana przy lgoowaniu
-                            int isInserted = loty.rezerwujLubKupLot( wybranaOpcja2, 1, String.valueOf(wybranyLot[0]), wybraneMiejsce, String.valueOf(wybranyLot[4]), String.valueOf(wybranyLot[5]) );
+                            int isInserted = zakupy.rezerwujLubKupLot( wybranaOpcja2, 1, String.valueOf(wybranyLot[0]), wybraneMiejsce, String.valueOf(wybranyLot[4]), String.valueOf(wybranyLot[5]) );
                             if( isInserted == 1 )
                             {
                                 JOptionPane.showMessageDialog(panelZamowien, "Zlecenie zrealizowane.");
                                 powiadomienia.potwierdzenieRezerwacjiKupna( wybranaOpcja2, String.valueOf(1) );
                             }
-                            else
+                            else if( isInserted == 2 )
                             {
-                                JOptionPane.showMessageDialog(panelZamowien, "Błąd przy skłasaniu zlecenia.");
+                                JOptionPane.showMessageDialog(panelZamowien, "Błąd przy składaniu zlecenia.");
+                            }
+                            
+                            else if( isInserted == 3 )
+                            {
+                                JOptionPane.showMessageDialog(panelZamowien, "Niewystarczająca ilość środków.");
                             }
                         } 
                         catch (SQLException ex) 
