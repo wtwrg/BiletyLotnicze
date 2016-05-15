@@ -12,16 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author Amarylis
- */
 public class Loty 
 {
     private final static String POBRANIE_LOTOW = "SELECT LOT_ID, LOT_ODLOT_PRZYLOT, LOT_CENA_KLASA_EKONOMICZNA, " +
@@ -33,15 +23,15 @@ public class Loty
     private final static String POBRANIE_SAMOLOTOW = "SELECT SML_ID, SML_LINIE_LOTNICZE, SML_ILOSC_RZEDOW, SML_ILOSC_MIEJSC_W_RZEDZIE, " +
             "SML_KLASA_EKONOMICZNA, SML_KLASA_EKONOMICZNA_PREMIUM, SML_KLASA_BIZNES, SML_KLASA_PIERWSZA FROM SAMOLOTY"; 
     
-    private String POBRANIE_RZEDOW = "SELECT SML_ILOSC_RZEDOW FROM SAMOLOTY, LOTY WHERE LOT_ID=? AND LOT_SAMOLOT_ID=SML_ID";
+    private final String POBRANIE_RZEDOW = "SELECT SML_ILOSC_RZEDOW FROM SAMOLOTY, LOTY WHERE LOT_ID=? AND LOT_SAMOLOT_ID=SML_ID";
     
-    private String POBRANIE_MIEJSC = "SELECT SML_ILOSC_MIEJSC_W_RZEDZIE FROM SAMOLOTY, LOTY WHERE LOT_ID=? AND LOT_SAMOLOT_ID=SML_ID";
+    private final String POBRANIE_MIEJSC = "SELECT SML_ILOSC_MIEJSC_W_RZEDZIE FROM SAMOLOTY, LOTY WHERE LOT_ID=? AND LOT_SAMOLOT_ID=SML_ID";
     
-    private String POBRANIE_ZAJETYCH_MIEJSC = "SELECT ZKP_RZAD_MIEJSCE, RZR_RZAD_MIEJSCE FROM ZAKUPY, REZERWACJE WHERE ZKP_LOT_ID=? AND ZKP_LOT_ID=RZR_LOT_ID";
+    private final String POBRANIE_ZAJETYCH_MIEJSC = "SELECT ZKP_RZAD_MIEJSCE, RZR_RZAD_MIEJSCE FROM ZAKUPY, REZERWACJE WHERE ZKP_LOT_ID=? AND ZKP_LOT_ID=RZR_LOT_ID";
     
-    private String REZERWACJA_LOTU = "INSERT INTO rezerwacje (RZR_UZT_ID, RZR_LOT_ID, RZR_DATA, RZR_RZAD_MIEJSCE, RZR_KLASA) VALUES (?,?,NOW(),?,?)";
+    private final String REZERWACJA_LOTU = "INSERT INTO rezerwacje (RZR_UZT_ID, RZR_LOT_ID, RZR_DATA, RZR_RZAD_MIEJSCE, RZR_KLASA) VALUES (?,?,NOW(),?,?)";
     
-    private String KUPNO_LOTU = "INSERT INTO zakupy (ZKP_UZT_ID, ZKP_LOT_ID, ZKP_DATA, ZKP_RZAD_MIEJSCE, ZKP_KLASA, ZKP_KWOTA) VALUES (?,?,NOW(),?,?,?)";
+    private final String KUPNO_LOTU = "INSERT INTO zakupy (ZKP_UZT_ID, ZKP_LOT_ID, ZKP_DATA, ZKP_RZAD_MIEJSCE, ZKP_KLASA, ZKP_KWOTA) VALUES (?,?,NOW(),?,?,?)";
 
     Connection connection = null;
     DBConnector dbConnector = null;
