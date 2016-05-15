@@ -1,6 +1,10 @@
 package Formatki;
 
+import Beany.LotBean;
 import Narzedzia.Loty;
+import java.awt.BorderLayout;
+import java.awt.Dialog.ModalityType;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,9 +13,16 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractButton;
+import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -32,6 +43,8 @@ public class AktualneLoty extends javax.swing.JFrame {
     ButtonGroup zamowienia;
     ButtonGroup przylotyOdloty;
     List<AbstractButton> listCheckBoxes;
+    Loty loty;
+    List<Object[]> listaLotow;
     
     public AktualneLoty() {
         initComponents();
@@ -42,6 +55,7 @@ public class AktualneLoty extends javax.swing.JFrame {
         przylotyOdloty.add( jCheckBox2 );
         zamowienia = new ButtonGroup();
         listCheckBoxes = new ArrayList<AbstractButton>();
+        loty = new Loty();
     }
 
     /**
@@ -102,11 +116,11 @@ public class AktualneLoty extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Miasto", "Lotnisko", "Linia Lotnicza", "Klasa", "Cena", "Data"
+                "ID lotu", "Miasto", "Lotnisko", "Linia Lotnicza", "Klasa", "Cena", "Data"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -116,10 +130,11 @@ public class AktualneLoty extends javax.swing.JFrame {
         listaAktualnychLotow.setRowHeight(30);
         jScrollPane2.setViewportView(listaAktualnychLotow);
         if (listaAktualnychLotow.getColumnModel().getColumnCount() > 0) {
-            listaAktualnychLotow.getColumnModel().getColumn(0).setPreferredWidth(30);
-            listaAktualnychLotow.getColumnModel().getColumn(2).setPreferredWidth(20);
-            listaAktualnychLotow.getColumnModel().getColumn(3).setPreferredWidth(50);
-            listaAktualnychLotow.getColumnModel().getColumn(4).setPreferredWidth(30);
+            listaAktualnychLotow.getColumnModel().getColumn(0).setPreferredWidth(3);
+            listaAktualnychLotow.getColumnModel().getColumn(1).setPreferredWidth(30);
+            listaAktualnychLotow.getColumnModel().getColumn(3).setPreferredWidth(20);
+            listaAktualnychLotow.getColumnModel().getColumn(4).setPreferredWidth(50);
+            listaAktualnychLotow.getColumnModel().getColumn(5).setPreferredWidth(30);
         }
 
         jLabel3.setText("Data lotu:");
@@ -243,19 +258,17 @@ public class AktualneLoty extends javax.swing.JFrame {
         
         if( jCheckBox1.isSelected() )
         {
-            przylotyOdloty = "O";
+            przylotyOdloty = LotBean.ODLOT;
         }
         if( jCheckBox2.isSelected() )
         {
-            przylotyOdloty = "P";
+            przylotyOdloty = LotBean.PRZYLOT;
         }
         klasa = (String)klasaComboBox.getSelectedItem();
-        
-        Loty loty = new Loty();
 
         try 
         {
-            List<Object[]> listaLotow = loty.pokazLoty( przylotyOdloty, klasa );
+            listaLotow = loty.pokazLoty( przylotyOdloty, klasa );
             DefaultTableModel model = (DefaultTableModel) listaAktualnychLotow.getModel();
             
             int rekordy = model.getRowCount();
@@ -319,6 +332,107 @@ public class AktualneLoty extends javax.swing.JFrame {
         if( wybranaOpcja == null )
         {
             JOptionPane.showMessageDialog(this, "Proszę wybrać lot.");
+        }
+        else
+        {
+            String wybranaOpcja2 = wybranaOpcja;
+            String numerLotu = String.valueOf(wybranaOpcja.charAt(wybranaOpcja.length()-1));
+            String rodzajZamowienia = wybranaOpcja.substring(0, wybranaOpcja.length()-1);
+
+            Object[] wybranyLot = listaLotow.get(Integer.parseInt(numerLotu));
+            
+            try 
+            {
+                Object[] rzedy = loty.pobierzDostepneRzedy( wybranyLot[0] );
+                Object[] miejsca = loty.pobierzDostepneMiejsca( wybranyLot[0], 1 );
+                JPanel panelWyboruMiejsc = new JPanel();
+                JPanel przyciskiPaneluWyboruMiejsc = new JPanel();
+                JLabel miejscaEtykieta = new JLabel("Miejsce:");
+                JComboBox rzedyComboBox = new JComboBox(rzedy);
+                JComboBox miejscaComboBox = new JComboBox(miejsca);
+                JDialog oknoWyboruMiejsc = new JDialog(this, "Wybierz miejsce", ModalityType.MODELESS);
+                rzedyComboBox.addActionListener(new java.awt.event.ActionListener() 
+                {
+                    @Override
+                    public void actionPerformed(java.awt.event.ActionEvent evt) 
+                    {
+                        try 
+                        {
+                            Object[] miejsca = loty.pobierzDostepneMiejsca( wybranyLot[0], rzedyComboBox.getSelectedItem() );
+                            panelWyboruMiejsc.remove(miejscaComboBox);
+                            panelWyboruMiejsc.remove(miejscaEtykieta);
+                            panelWyboruMiejsc.add(miejscaEtykieta);
+                            miejscaComboBox.setModel(new DefaultComboBoxModel(miejsca));
+                            panelWyboruMiejsc.add(miejscaComboBox);
+                            panelWyboruMiejsc.repaint();
+                            panelWyboruMiejsc.revalidate();
+                        } 
+                        catch (SQLException ex) 
+                        {
+                            Logger.getLogger(AktualneLoty.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                });
+                JButton przyciskAnulujOknoWyboruMiejsc = new JButton("Anuluj");
+                przyciskAnulujOknoWyboruMiejsc.addActionListener(new java.awt.event.ActionListener() 
+                {
+                    @Override
+                    public void actionPerformed(java.awt.event.ActionEvent evt) 
+                    {
+                        oknoWyboruMiejsc.setVisible(false);
+                    }
+                });
+                JButton przyciskAkceptujOknoWyboruMiejsc = new JButton("Akceptuj");
+                przyciskAkceptujOknoWyboruMiejsc.addActionListener(new java.awt.event.ActionListener() 
+                {
+                    @Override
+                    public void actionPerformed(java.awt.event.ActionEvent evt) 
+                    {
+                        oknoWyboruMiejsc.setVisible(false);
+                        String wybraneMiejsce = rzedyComboBox.getSelectedItem() + "|" + miejscaComboBox.getSelectedItem();
+                        try 
+                        {
+                            // TODO : zmienić ID uzytkownika za globalna zmienna, ustawiana przy lgoowaniu
+                            boolean isInserted = loty.rezerwujLubKupLot( wybranaOpcja2, 1, String.valueOf(wybranyLot[0]), wybraneMiejsce, String.valueOf(wybranyLot[4]), String.valueOf(wybranyLot[5]) );
+                            if( isInserted )
+                            {
+                                JOptionPane.showMessageDialog(panelZamowien, "Zlecenie zrealizowane.");
+                            }
+                            else
+                            {
+                                JOptionPane.showMessageDialog(panelZamowien, "Błąd przy skłasaniu zlecenia.");
+                            }
+                        } 
+                        catch (SQLException ex) 
+                        {
+                            Logger.getLogger(AktualneLoty.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                });
+                
+                przyciskiPaneluWyboruMiejsc.add(przyciskAnulujOknoWyboruMiejsc);
+                przyciskiPaneluWyboruMiejsc.add(Box.createHorizontalStrut(15));
+                przyciskiPaneluWyboruMiejsc.add(przyciskAkceptujOknoWyboruMiejsc);
+                        
+                panelWyboruMiejsc.add(new JLabel("Rząd:"));
+                panelWyboruMiejsc.add(rzedyComboBox);
+                panelWyboruMiejsc.add(Box.createHorizontalStrut(15));
+                panelWyboruMiejsc.add(miejscaEtykieta);
+                panelWyboruMiejsc.add(miejscaComboBox);
+                panelWyboruMiejsc.repaint();
+                panelWyboruMiejsc.revalidate();
+
+                oknoWyboruMiejsc.add(BorderLayout.NORTH, panelWyboruMiejsc);
+                oknoWyboruMiejsc.add(BorderLayout.SOUTH, przyciskiPaneluWyboruMiejsc);
+                oknoWyboruMiejsc.setSize(new Dimension(300,125));
+                oknoWyboruMiejsc.setLocationRelativeTo(this);
+                oknoWyboruMiejsc.setDefaultCloseOperation( DISPOSE_ON_CLOSE );
+                oknoWyboruMiejsc.setVisible(true);
+            } 
+            catch (SQLException ex) 
+            {
+                Logger.getLogger(AktualneLoty.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_wykonajPrzyciskActionPerformed
 

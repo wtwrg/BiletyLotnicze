@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JRadioButton;
+import java.util.regex.Pattern;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -33,6 +33,16 @@ public class Loty
     private final static String POBRANIE_SAMOLOTOW = "SELECT SML_ID, SML_LINIE_LOTNICZE, SML_ILOSC_RZEDOW, SML_ILOSC_MIEJSC_W_RZEDZIE, " +
             "SML_KLASA_EKONOMICZNA, SML_KLASA_EKONOMICZNA_PREMIUM, SML_KLASA_BIZNES, SML_KLASA_PIERWSZA FROM SAMOLOTY"; 
     
+    private String POBRANIE_RZEDOW = "SELECT SML_ILOSC_RZEDOW FROM SAMOLOTY, LOTY WHERE LOT_ID=? AND LOT_SAMOLOT_ID=SML_ID";
+    
+    private String POBRANIE_MIEJSC = "SELECT SML_ILOSC_MIEJSC_W_RZEDZIE FROM SAMOLOTY, LOTY WHERE LOT_ID=? AND LOT_SAMOLOT_ID=SML_ID";
+    
+    private String POBRANIE_ZAJETYCH_MIEJSC = "SELECT ZKP_RZAD_MIEJSCE, RZR_RZAD_MIEJSCE FROM ZAKUPY, REZERWACJE WHERE ZKP_LOT_ID=? AND ZKP_LOT_ID=RZR_LOT_ID";
+    
+    private String REZERWACJA_LOTU = "INSERT INTO rezerwacje (RZR_UZT_ID, RZR_LOT_ID, RZR_DATA, RZR_RZAD_MIEJSCE, RZR_KLASA) VALUES (?,?,NOW(),?,?)";
+    
+    private String KUPNO_LOTU = "INSERT INTO zakupy (ZKP_UZT_ID, ZKP_LOT_ID, ZKP_DATA, ZKP_RZAD_MIEJSCE, ZKP_KLASA, ZKP_KWOTA) VALUES (?,?,NOW(),?,?,?)";
+
     Connection connection = null;
     DBConnector dbConnector = null;
     PreparedStatement ps = null;
@@ -163,22 +173,22 @@ public class Loty
                 {
                     if( lot.getLotCenaKlasyEkonomicznej() != 0 )
                     {
-                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA, lot.getLotCenaKlasyEkonomicznej(), lot.getLotDataOdlotu() };
+                        akutalnyLot = new Object[]{ lot.getLotID(), lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA, lot.getLotCenaKlasyEkonomicznej(), lot.getLotDataOdlotu() };
                         aktualneLoty.add(akutalnyLot);
                     }
                     if( lot.getLotCenaKlasyEkonomicznejPremium()!= 0 )
                     {
-                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA_PREMIUM, lot.getLotCenaKlasyEkonomicznejPremium(), lot.getLotDataOdlotu()};
+                        akutalnyLot = new Object[]{ lot.getLotID(), lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA_PREMIUM, lot.getLotCenaKlasyEkonomicznejPremium(), lot.getLotDataOdlotu()};
                         aktualneLoty.add(akutalnyLot);
                     }
                     if( lot.getLotCenaKlasyBiznes()!= 0 )
                     {
-                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_BIZNES, lot.getLotCenaKlasyBiznes(), lot.getLotDataOdlotu()};
+                        akutalnyLot = new Object[]{ lot.getLotID(), lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_BIZNES, lot.getLotCenaKlasyBiznes(), lot.getLotDataOdlotu()};
                         aktualneLoty.add(akutalnyLot);
                     }
                     if( lot.getLotCenaKlasyPierwszej()!= 0 )
                     {
-                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_PIERWSZA, lot.getLotCenaKlasyPierwszej(), lot.getLotDataOdlotu()};
+                        akutalnyLot = new Object[]{ lot.getLotID(), lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_PIERWSZA, lot.getLotCenaKlasyPierwszej(), lot.getLotDataOdlotu()};
                         aktualneLoty.add(akutalnyLot);
                     }
                 }
@@ -186,7 +196,7 @@ public class Loty
                 {
                     if( lot.getLotCenaKlasyEkonomicznej() != 0 )
                     {
-                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA, lot.getLotCenaKlasyEkonomicznej(), lot.getLotDataOdlotu() };
+                        akutalnyLot = new Object[]{ lot.getLotID(), lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA, lot.getLotCenaKlasyEkonomicznej(), lot.getLotDataOdlotu() };
                         aktualneLoty.add(akutalnyLot);
                     }
                 }
@@ -194,7 +204,7 @@ public class Loty
                 {
                     if( lot.getLotCenaKlasyEkonomicznejPremium()!= 0 )
                     {
-                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA_PREMIUM, lot.getLotCenaKlasyEkonomicznejPremium(), lot.getLotDataOdlotu()};
+                        akutalnyLot = new Object[]{ lot.getLotID(), lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA_PREMIUM, lot.getLotCenaKlasyEkonomicznejPremium(), lot.getLotDataOdlotu()};
                         aktualneLoty.add(akutalnyLot);
                     }
                 }
@@ -202,7 +212,7 @@ public class Loty
                 {
                     if( lot.getLotCenaKlasyBiznes()!= 0 )
                     {
-                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_BIZNES, lot.getLotCenaKlasyBiznes(), lot.getLotDataOdlotu()};
+                        akutalnyLot = new Object[]{ lot.getLotID(), lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_BIZNES, lot.getLotCenaKlasyBiznes(), lot.getLotDataOdlotu()};
                         aktualneLoty.add(akutalnyLot);
                     }
                 }
@@ -210,7 +220,7 @@ public class Loty
                 {
                     if( lot.getLotCenaKlasyPierwszej()!= 0 )
                     {
-                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_PIERWSZA, lot.getLotCenaKlasyPierwszej(), lot.getLotDataOdlotu()};
+                        akutalnyLot = new Object[]{ lot.getLotID(), lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_PIERWSZA, lot.getLotCenaKlasyPierwszej(), lot.getLotDataOdlotu()};
                         aktualneLoty.add(akutalnyLot);
                     }
                 }
@@ -221,22 +231,22 @@ public class Loty
                 {
                     if( lot.getLotCenaKlasyEkonomicznej() != 0 )
                     {
-                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA, lot.getLotCenaKlasyEkonomicznej(), lot.getLotDataPrzylotu() };
+                        akutalnyLot = new Object[]{ lot.getLotID(), lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA, lot.getLotCenaKlasyEkonomicznej(), lot.getLotDataPrzylotu() };
                         aktualneLoty.add(akutalnyLot);
                     }
                     if( lot.getLotCenaKlasyEkonomicznejPremium()!= 0 )
                     {
-                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA_PREMIUM, lot.getLotCenaKlasyEkonomicznejPremium(), lot.getLotDataPrzylotu()};
+                        akutalnyLot = new Object[]{ lot.getLotID(), lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA_PREMIUM, lot.getLotCenaKlasyEkonomicznejPremium(), lot.getLotDataPrzylotu()};
                         aktualneLoty.add(akutalnyLot);
                     }
                     if( lot.getLotCenaKlasyBiznes()!= 0 )
                     {
-                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_BIZNES, lot.getLotCenaKlasyBiznes(), lot.getLotDataPrzylotu()};
+                        akutalnyLot = new Object[]{ lot.getLotID(), lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_BIZNES, lot.getLotCenaKlasyBiznes(), lot.getLotDataPrzylotu()};
                         aktualneLoty.add(akutalnyLot);
                     }
                     if( lot.getLotCenaKlasyPierwszej()!= 0 )
                     {
-                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_PIERWSZA, lot.getLotCenaKlasyPierwszej(), lot.getLotDataPrzylotu()};
+                        akutalnyLot = new Object[]{ lot.getLotID(), lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_PIERWSZA, lot.getLotCenaKlasyPierwszej(), lot.getLotDataPrzylotu()};
                         aktualneLoty.add(akutalnyLot);
                     }
                 }
@@ -244,7 +254,7 @@ public class Loty
                 {
                     if( lot.getLotCenaKlasyEkonomicznej() != 0 )
                     {
-                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA, lot.getLotCenaKlasyEkonomicznej(), lot.getLotDataPrzylotu() };
+                        akutalnyLot = new Object[]{ lot.getLotID(), lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA, lot.getLotCenaKlasyEkonomicznej(), lot.getLotDataPrzylotu() };
                         aktualneLoty.add(akutalnyLot);
                     }
                 }
@@ -252,7 +262,7 @@ public class Loty
                 {
                     if( lot.getLotCenaKlasyEkonomicznejPremium()!= 0 )
                     {
-                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA_PREMIUM, lot.getLotCenaKlasyEkonomicznejPremium(), lot.getLotDataPrzylotu()};
+                        akutalnyLot = new Object[]{ lot.getLotID(), lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_EKONOMICZNA_PREMIUM, lot.getLotCenaKlasyEkonomicznejPremium(), lot.getLotDataPrzylotu()};
                         aktualneLoty.add(akutalnyLot);
                     }
                 }
@@ -260,7 +270,7 @@ public class Loty
                 {
                     if( lot.getLotCenaKlasyBiznes()!= 0 )
                     {
-                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_BIZNES, lot.getLotCenaKlasyBiznes(), lot.getLotDataPrzylotu()};
+                        akutalnyLot = new Object[]{ lot.getLotID(), lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_BIZNES, lot.getLotCenaKlasyBiznes(), lot.getLotDataPrzylotu()};
                         aktualneLoty.add(akutalnyLot);
                     }
                 }
@@ -268,7 +278,7 @@ public class Loty
                 {
                     if( lot.getLotCenaKlasyPierwszej()!= 0 )
                     {
-                        akutalnyLot = new Object[]{ lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_PIERWSZA, lot.getLotCenaKlasyPierwszej(), lot.getLotDataPrzylotu()};
+                        akutalnyLot = new Object[]{ lot.getLotID(), lot.getLotLotniskoBean().getLotniskoMiasto(), lot.getLotLotniskoBean().getLotniskoNazwa(), lot.getLotSamolotBean().getLinieLotnicze(), SamolotBean.KLASA_PIERWSZA, lot.getLotCenaKlasyPierwszej(), lot.getLotDataPrzylotu()};
                         aktualneLoty.add(akutalnyLot);
                     }
                 }
@@ -276,5 +286,158 @@ public class Loty
         }
         
         return aktualneLoty;
+    }
+    
+    public Object[] pobierzDostepneRzedy( Object IDLotu ) throws SQLException
+    {
+        connection = dbConnector.setConnection();
+        String iloscRzedowPS = POBRANIE_RZEDOW.replaceFirst("\\?", String.valueOf(IDLotu));
+        Object[] rzedy = null;
+        int iloscRzedow = 0;
+        try
+        {
+            ps = connection.prepareStatement( iloscRzedowPS );
+            rs = ps.executeQuery();
+            while(rs.next())
+            {
+                iloscRzedow = rs.getInt(1);
+            }
+            rzedy = new Object[iloscRzedow];
+            
+            for( int i=1; i<=iloscRzedow; i++ )
+            {
+                rzedy[i-1] = i;
+            }
+            
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            connection.close();
+            ps.close();
+            rs.close();
+        }
+        return rzedy;
+    }
+    
+    public Object[] pobierzDostepneMiejsca( Object IDLotu, Object rzad ) throws SQLException
+    {
+        connection = dbConnector.setConnection();
+        String iloscMiejscPS = POBRANIE_MIEJSC.replaceFirst("\\?", String.valueOf(IDLotu));
+        Object[] miejsca = null;
+        int iloscMiejsc = 0;
+        List<String> rzedyMiejsca = new ArrayList<String>();
+        List<String> zajeteMiejsca = new ArrayList<String>();
+        try
+        {
+            ps = connection.prepareStatement( iloscMiejscPS );
+            rs = ps.executeQuery();
+            while(rs.next())
+            {
+                iloscMiejsc = rs.getInt(1);
+            }
+            
+            String zajeteMiejscaPS = POBRANIE_ZAJETYCH_MIEJSC.replaceFirst("\\?", String.valueOf(IDLotu));
+            ps = connection.prepareStatement( zajeteMiejscaPS );
+            rs = ps.executeQuery();
+            while(rs.next())
+            {
+                rzedyMiejsca.add( rs.getString(1));
+                rzedyMiejsca.add( rs.getString(2));
+            }
+            for( String rzadMiejsce : rzedyMiejsca )
+            {
+                String[] tmp = rzadMiejsce.split(Pattern.quote("|"));
+                if( tmp[0].equals(String.valueOf(rzad)) && !zajeteMiejsca.contains(String.valueOf(tmp[1])) )
+                {
+                    zajeteMiejsca.add(tmp[1]);
+                }
+            }
+            
+            miejsca = new Object[iloscMiejsc-zajeteMiejsca.size()];
+            
+            int j = 0;
+            for( int i=1; i<=miejsca.length+zajeteMiejsca.size(); i++ )
+            {
+                if( !zajeteMiejsca.contains(String.valueOf(i)) )
+                {
+                    miejsca[j] = i;
+                    j++;
+                }
+            }
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            connection.close();
+            ps.close();
+            rs.close();
+        }
+        return miejsca;
+    }
+    
+    public boolean rezerwujLubKupLot( String wybranaOpcja, Integer IDUzytkownika, String IDLotu, String wybraneMiejsce, String wybranaKlasa, String cena ) throws SQLException
+    {
+        boolean isInserted = false;
+        try
+        {
+            connection = dbConnector.setConnection();
+            String lot = null;
+            String klasa = null;
+            if( wybranaKlasa.equals( SamolotBean.KLASA_EKONOMICZNA ) )
+            {
+                klasa = "E";
+            }
+            else if( wybranaKlasa.equals( SamolotBean.KLASA_EKONOMICZNA_PREMIUM ) )
+            {
+                klasa = "EP";
+            }
+            else if( wybranaKlasa.equals( SamolotBean.KLASA_BIZNES ) )
+            {
+                klasa = "B";
+            }
+            else if( wybranaKlasa.equals( SamolotBean.KLASA_PIERWSZA ) )
+            {
+                klasa = "P";
+            }
+            if( wybranaOpcja.contains("rezerwuj") )
+            {
+                lot = REZERWACJA_LOTU.replaceFirst("\\?", String.valueOf(IDUzytkownika));
+                lot = lot.replaceFirst("\\?", IDLotu);
+                lot = lot.replaceFirst("\\?", wybraneMiejsce);
+                lot = lot.replaceFirst("\\?", klasa);
+
+                ps = connection.prepareStatement( lot );
+                isInserted = ps.execute();
+            }
+            else if( wybranaOpcja.contains("kup") )
+            {
+                lot = KUPNO_LOTU.replaceFirst("\\?", String.valueOf(IDUzytkownika));
+                lot = lot.replaceFirst("\\?", IDLotu);
+                lot = lot.replaceFirst("\\?", wybraneMiejsce);
+                lot = lot.replaceFirst("\\?", klasa);
+                lot = lot.replaceFirst("\\?", cena);
+                
+                ps = connection.prepareStatement( lot );
+                isInserted = ps.execute();
+            }
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            connection.close();
+            ps.close();
+            rs.close();
+        }
+        return isInserted;
     }
 }
