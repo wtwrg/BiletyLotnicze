@@ -4,6 +4,8 @@ package Narzedzia;
 import Beany.SamolotBean;
 import Beany.LotniskoBean;
 import Beany.LotBean;
+import Beany.RezerwacjaBean;
+import Beany.ZakupBean;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -103,5 +105,58 @@ public class NarzedziaBazyDanych
             e.printStackTrace();
         }
         return listaLotniskoBean;
+    }
+    
+    public List<ZakupBean> ustawZakup( ResultSet rs )
+    {
+        List<ZakupBean> listaZakupowBean = new ArrayList<ZakupBean>();
+        try
+        {
+            while( rs.next() )
+            {
+                ZakupBean zakupBean = new ZakupBean();
+                
+                zakupBean.setZakupID( rs.getInt( 1 ) );
+                zakupBean.setZakupUzytkownikID( rs.getInt( 2 ) );
+                zakupBean.setZakupLotID( rs.getInt( 3 ) );
+                zakupBean.setZakupData( rs.getString( 4 ) );
+                zakupBean.setZakupRzadMejsce( rs.getString( 5 ) );
+                zakupBean.setZakupKlasa( rs.getString( 6 ) );
+                zakupBean.setZakupKwota( rs.getFloat( 7 ) );
+                
+                listaZakupowBean.add( zakupBean );
+            }
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        return listaZakupowBean;
+    }
+    
+    public List<RezerwacjaBean> ustawRezerwacje( ResultSet rs )
+    {
+        List<RezerwacjaBean> listaRezerwacjiBean = new ArrayList<RezerwacjaBean>();
+        try
+        {
+            while( rs.next() )
+            {
+                RezerwacjaBean rezerwacjaBean = new RezerwacjaBean();
+                
+                rezerwacjaBean.setRezerwacjaID( rs.getInt( 1 ) );
+                rezerwacjaBean.setRezerwacjaUzytkownikID( rs.getInt( 2 ) );
+                rezerwacjaBean.setRezerwacjaLotID( rs.getInt( 3 ) );
+                rezerwacjaBean.setRezerwacjaData( rs.getString( 4 ) );
+                rezerwacjaBean.setRezerwacjaRzadMiejsce( rs.getString( 5 ) );
+                rezerwacjaBean.setRezerwacjaKlasa( rs.getString( 6 ) );
+                
+                listaRezerwacjiBean.add( rezerwacjaBean );
+            }
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        return listaRezerwacjiBean;
     }
 }

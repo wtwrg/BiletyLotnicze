@@ -9,7 +9,7 @@ public class RezerwacjaBean
     Integer rezerwacjaID;
     Integer rezerwacjaUzytkownikID;
     Integer rezerwacjaLotID;
-    Date rezerwacjaData;
+    String rezerwacjaData;
     String rezerwacjaRzadMiejsce;
     String rezerwacjaKlasa;
 
@@ -37,11 +37,11 @@ public class RezerwacjaBean
         this.rezerwacjaLotID = rezerwacjaLotID;
     }
 
-    public Date getRezerwacjaData() {
+    public String getRezerwacjaData() {
         return rezerwacjaData;
     }
 
-    public void setRezerwacjaData(Date rezerwacjaData) {
+    public void setRezerwacjaData(String rezerwacjaData) {
         this.rezerwacjaData = rezerwacjaData;
     }
 

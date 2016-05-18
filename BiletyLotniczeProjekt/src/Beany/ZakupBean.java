@@ -9,7 +9,7 @@ public class ZakupBean
     Integer zakupID;
     Integer zakupUzytkownikID;
     Integer zakupLotID;
-    Date zakupData;
+    String zakupData;
     String zakupRzadMejsce;
     String zakupKlasa;
     float zakupKwota;
@@ -38,11 +38,11 @@ public class ZakupBean
         this.zakupLotID = zakupLotID;
     }
 
-    public Date getZakupData() {
+    public String getZakupData() {
         return zakupData;
     }
 
-    public void setZakupData(Date zakupData) {
+    public void setZakupData(String zakupData) {
         this.zakupData = zakupData;
     }
 

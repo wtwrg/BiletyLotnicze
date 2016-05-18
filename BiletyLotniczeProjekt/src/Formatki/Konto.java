@@ -1,9 +1,19 @@
 package Formatki;
 
 import Narzedzia.Zakupy;
+import java.awt.Component;
+import java.awt.GridLayout;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -22,8 +32,9 @@ public class Konto extends javax.swing.JFrame {
      */
     private float dostepneSrodki = 0;
     Zakupy zakupy;
+    List<Object[]> listaZakupow;
     
-    public Konto() 
+    public Konto() throws SQLException 
     {
         initComponents();
         zakupy = new Zakupy();
@@ -36,6 +47,48 @@ public class Konto extends javax.swing.JFrame {
             Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
         }
         srodkiLabel.setText(String.valueOf(dostepneSrodki));
+        listaZakupow = zakupy.pokazZakupy(1);
+        if( listaZakupow != null )
+        {
+            ustawZakupy(listaZakupow);
+        }
+    }
+    
+    private void ustawZakupy( List<Object[]> listaZakupow )
+    {
+        DefaultTableModel model = (DefaultTableModel) zakupyTabela.getModel();
+            
+            int rekordy = model.getRowCount();
+            for( int i=0; i < rekordy; i++ )
+            {
+                model.removeRow(0);
+            }
+                panelZakupow.setLayout(new GridLayout(0,2, 10, 10));
+
+                for( int i=0; i<listaZakupow.size(); i++ )
+                {
+                    Object[] lot = listaZakupow.get(i);
+                    model.addRow(lot);
+                    JButton pokazPDF = new JButton();
+                    panelZakupow.add(pokazPDF);
+                    
+                    if( lot[0].equals( Zakupy.ZAKUP ) )
+                    {
+                        JButton kup = new JButton();
+                        panelZakupow.add(kup);
+                    }
+                }
+                panelZakupow.revalidate();
+                panelZakupow.repaint();
+    }
+    
+    private static class JTableButtonRenderer implements TableCellRenderer 
+    {        
+        @Override 
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JButton button = (JButton)value;
+            return button;  
+        }
     }
 
     /**
@@ -52,9 +105,10 @@ public class Konto extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        zakupyTabela = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         srodkiLabel = new javax.swing.JLabel();
+        panelZakupow = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -72,40 +126,40 @@ public class Konto extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Calibri", 2, 12)); // NOI18N
         jLabel2.setText("Histroria Twoich zakupów:");
 
-        jTable1.setFont(new java.awt.Font("Calibri", 2, 12)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        zakupyTabela.setFont(new java.awt.Font("Calibri", 2, 12)); // NOI18N
+        zakupyTabela.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
-                "Data", "Lot", "Kwota"
+                "Status", "Data", "Lot", "Kwota"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(zakupyTabela);
 
         jLabel3.setFont(new java.awt.Font("Calibri", 3, 12)); // NOI18N
         jLabel3.setText("zł");
 
         srodkiLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+
+        javax.swing.GroupLayout panelZakupowLayout = new javax.swing.GroupLayout(panelZakupow);
+        panelZakupow.setLayout(panelZakupowLayout);
+        panelZakupowLayout.setHorizontalGroup(
+            panelZakupowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 134, Short.MAX_VALUE)
+        );
+        panelZakupowLayout.setVerticalGroup(
+            panelZakupowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -123,8 +177,10 @@ public class Konto extends javax.swing.JFrame {
                         .addComponent(jLabel3)))
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(24, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 757, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 649, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(panelZakupow, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -138,7 +194,9 @@ public class Konto extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
                 .addGap(48, 48, 48)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
+                    .addComponent(panelZakupow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         jMenu1.setText("Szukaj");
@@ -165,7 +223,7 @@ public class Konto extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -192,7 +250,8 @@ public class Konto extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JPanel panelZakupow;
     private javax.swing.JLabel srodkiLabel;
+    private javax.swing.JTable zakupyTabela;
     // End of variables declaration//GEN-END:variables
 }

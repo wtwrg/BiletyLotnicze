@@ -1,11 +1,15 @@
 
 package Narzedzia;
 
+import Beany.RezerwacjaBean;
 import Beany.SamolotBean;
+import Beany.ZakupBean;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,16 +19,24 @@ public class Zakupy
     public static final String UAKTUALNIJ_SRODKI = "UPDATE uzytkownicy SET UZT_SALDO=? WHERE UZT_ID=?";
     private final String REZERWACJA_LOTU = "INSERT INTO rezerwacje (RZR_UZT_ID, RZR_LOT_ID, RZR_DATA, RZR_RZAD_MIEJSCE, RZR_KLASA) VALUES (?,?,NOW(),?,?)";
     private final String KUPNO_LOTU = "INSERT INTO zakupy (ZKP_UZT_ID, ZKP_LOT_ID, ZKP_DATA, ZKP_RZAD_MIEJSCE, ZKP_KLASA, ZKP_KWOTA) VALUES (?,?,NOW(),?,?,?)";
+    private final String POBRANIE_ZAKUPOW = "SELECT * FROM ZAKUPY WHERE ZKP_UZT_ID=?";
+    private final String POBRANIE_REZERWACJI = "SELECT * FROM REZERWACJE WHERE RZR_UZT_ID=?";
+    private final String POBIERZ_LOTNISKO_DLA_REZERWACJI = "SELECT LTN_NAZWA FROM LOTNISKO, LOTY, REZERWACJE WHERE LTN_ID=LOT_LOTNISKO_ID AND LOT_ID=RZR_LOT_ID AND RZR_ID=?";
+    private final String POBIERZ_LOTNISKO_DLA_ZAKUPU = "SELECT LTN_NAZWA FROM LOTNISKO, LOTY, ZAKUPY WHERE LTN_ID=LOT_LOTNISKO_ID AND LOT_ID=ZKP_LOT_ID AND ZKP_ID=?";
 
+    public final static String ZAKUP = "Zakup";
+    public final static String REZERWACJA = "Rezerwacja";
     
     Connection connection = null;
     DBConnector dbConnector = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
+    NarzedziaBazyDanych narzedziaBazyDanych = null;
     
     public Zakupy()
     {
         dbConnector = new DBConnector();
+        narzedziaBazyDanych = new NarzedziaBazyDanych();
     }
     
     public float pobierzDostepneSrodki( Integer IDUzytkownika ) throws SQLException
@@ -142,5 +154,135 @@ public class Zakupy
             ps.close();
         }
         return isInserted;
+    }
+    
+    public List<Object[]> pokazZakupy( Integer IDuzytkownika ) throws SQLException
+    {
+        List<ZakupBean> listaZakupow = pobierzZakupy( IDuzytkownika );
+        List<RezerwacjaBean> listaRezerwacji = pobierzRezerwacje(IDuzytkownika );
+        
+        List<Object[]> zakupyIRezerwacje = new ArrayList<Object[]>();
+        
+        for( ZakupBean zakupBean : listaZakupow )
+        {
+            Object[] zakup = null;
+            zakup = new Object[]{ ZAKUP, zakupBean.getZakupData(), pobierzLotniskoZakupu(zakupBean.getZakupID()), zakupBean.getZakupKwota() };
+            zakupyIRezerwacje.add(zakup);
+        }
+        
+        for( RezerwacjaBean rezerwacjaBean : listaRezerwacji )
+        {
+            Object[] zakup = null;
+            zakup = new Object[]{ REZERWACJA, rezerwacjaBean.getRezerwacjaData(), pobierzLotniskoDlaRezerwacji(rezerwacjaBean.getRezerwacjaID()), null };
+            zakupyIRezerwacje.add(zakup);
+        }
+        
+        return zakupyIRezerwacje;
+    }
+    
+    private List<ZakupBean> pobierzZakupy( Integer IDuzytkownika ) throws SQLException
+    {
+        connection = dbConnector.setConnection();
+        List<ZakupBean> listaLotyBean = new ArrayList<ZakupBean>();
+        try
+        {
+            ps = connection.prepareStatement( POBRANIE_ZAKUPOW );
+            ps.setObject(1, IDuzytkownika);
+            rs = ps.executeQuery();
+            listaLotyBean = narzedziaBazyDanych.ustawZakup( rs );
+            
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            connection.close();
+            ps.close();
+            rs.close();
+        }
+        return listaLotyBean;
+    }
+    
+    private List<RezerwacjaBean> pobierzRezerwacje( Integer IDuzytkownika ) throws SQLException
+    {
+        connection = dbConnector.setConnection();
+        List<RezerwacjaBean> listaRezerwacjaBean = new ArrayList<RezerwacjaBean>();
+        try
+        {
+            ps = connection.prepareStatement( POBRANIE_REZERWACJI );
+            ps.setObject(1, IDuzytkownika);
+            rs = ps.executeQuery();
+            listaRezerwacjaBean = narzedziaBazyDanych.ustawRezerwacje(rs );
+            
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            connection.close();
+            ps.close();
+            rs.close();
+        }
+        return listaRezerwacjaBean;
+    }
+    
+    private String pobierzLotniskoZakupu( Integer IDZakupu ) throws SQLException
+    {
+        connection = dbConnector.setConnection();
+        String lotnisko = null;
+        try
+        {
+            ps = connection.prepareStatement( POBIERZ_LOTNISKO_DLA_ZAKUPU );
+            ps.setObject(1, IDZakupu);
+            rs = ps.executeQuery();
+            while( rs.next() )
+            {
+                lotnisko = rs.getString( 1 );
+            }
+            
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            connection.close();
+            ps.close();
+            rs.close();
+        }
+        return lotnisko;
+    }
+    
+    private String pobierzLotniskoDlaRezerwacji( Integer IDRezerwacji ) throws SQLException
+    {
+        connection = dbConnector.setConnection();
+        String lotnisko = null;
+        try
+        {
+            ps = connection.prepareStatement( POBIERZ_LOTNISKO_DLA_REZERWACJI );
+            ps.setObject(1, IDRezerwacji);
+            rs = ps.executeQuery();
+            while( rs.next() )
+            {
+                lotnisko = rs.getString( 1 );
+            }
+            
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            connection.close();
+            ps.close();
+            rs.close();
+        }
+        return lotnisko;
     }
 }
