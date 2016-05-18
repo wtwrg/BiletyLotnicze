@@ -1,5 +1,10 @@
 package Formatki;
 
+import Narzedzia.Zakupy;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -15,8 +20,22 @@ public class Konto extends javax.swing.JFrame {
     /**
      * Creates new form Konto
      */
-    public Konto() {
+    private float dostepneSrodki = 0;
+    Zakupy zakupy;
+    
+    public Konto() 
+    {
         initComponents();
+        zakupy = new Zakupy();
+        try 
+        {
+            dostepneSrodki = zakupy.pobierzDostepneSrodki(1);
+        } 
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        srodkiLabel.setText(String.valueOf(dostepneSrodki));
     }
 
     /**
@@ -35,6 +54,7 @@ public class Konto extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
+        srodkiLabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -85,6 +105,8 @@ public class Konto extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Calibri", 3, 12)); // NOI18N
         jLabel3.setText("zł");
 
+        srodkiLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -95,7 +117,9 @@ public class Konto extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addGap(94, 94, 94)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(srodkiLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)))
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -109,7 +133,8 @@ public class Konto extends javax.swing.JFrame {
                 .addContainerGap(33, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel3))
+                    .addComponent(jLabel3)
+                    .addComponent(srodkiLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
                 .addGap(48, 48, 48)
@@ -168,5 +193,6 @@ public class Konto extends javax.swing.JFrame {
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JLabel srodkiLabel;
     // End of variables declaration//GEN-END:variables
 }
