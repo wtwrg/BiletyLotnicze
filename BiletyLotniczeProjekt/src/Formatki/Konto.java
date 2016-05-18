@@ -2,6 +2,7 @@ package Formatki;
 
 import Narzedzia.Zakupy;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,9 +12,11 @@ import java.util.logging.Logger;
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import net.miginfocom.swing.MigLayout;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -63,19 +66,23 @@ public class Konto extends javax.swing.JFrame {
             {
                 model.removeRow(0);
             }
-                panelZakupow.setLayout(new GridLayout(0,2, 10, 10));
+                panelZakupow.setLayout(new MigLayout());
 
                 for( int i=0; i<listaZakupow.size(); i++ )
                 {
                     Object[] lot = listaZakupow.get(i);
                     model.addRow(lot);
-                    JButton pokazPDF = new JButton();
-                    panelZakupow.add(pokazPDF);
-                    
-                    if( lot[0].equals( Zakupy.ZAKUP ) )
+                    if( lot[0].equals( Zakupy.REZERWACJA ) )
                     {
-                        JButton kup = new JButton();
-                        panelZakupow.add(kup);
+                        JButton pokazPDF = new JButton("Potwierdzenie");
+                        panelZakupow.add(pokazPDF);
+                        JButton kup = new JButton("Kup");
+                        panelZakupow.add(kup, "wrap");
+                    }
+                    else
+                    {
+                        JButton pokazPDF = new JButton("Potwierdzenie");
+                        panelZakupow.add(pokazPDF, "wrap");
                     }
                 }
                 panelZakupow.revalidate();
@@ -120,13 +127,12 @@ public class Konto extends javax.swing.JFrame {
         setResizable(false);
         setSize(new java.awt.Dimension(900, 600));
 
-        jLabel1.setFont(new java.awt.Font("Calibri", 2, 12)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
         jLabel1.setText("Aktualna ilość środków na koncie:");
 
-        jLabel2.setFont(new java.awt.Font("Calibri", 2, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
         jLabel2.setText("Histroria Twoich zakupów:");
 
-        zakupyTabela.setFont(new java.awt.Font("Calibri", 2, 12)); // NOI18N
         zakupyTabela.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -167,14 +173,11 @@ public class Konto extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(srodkiLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)))
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(srodkiLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -182,6 +185,10 @@ public class Konto extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(panelZakupow, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -191,9 +198,9 @@ public class Konto extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(jLabel3)
                     .addComponent(srodkiLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel2)
                 .addGap(48, 48, 48)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
                     .addComponent(panelZakupow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))

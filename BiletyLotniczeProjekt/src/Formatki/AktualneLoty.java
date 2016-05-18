@@ -26,6 +26,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
+import net.miginfocom.swing.MigLayout;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -52,8 +53,6 @@ public class AktualneLoty extends javax.swing.JFrame {
     
     public AktualneLoty() {
         initComponents();
-        jLabel4.setVisible(false);
-        jLabel5.setVisible(false);
         przylotyOdloty = new ButtonGroup();
         przylotyOdloty.add( jCheckBox1 );
         przylotyOdloty.add( jCheckBox2 );
@@ -85,8 +84,6 @@ public class AktualneLoty extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         wyszukajPrzycisk = new javax.swing.JButton();
         panelZamowien = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         wykonajPrzycisk = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -152,28 +149,15 @@ public class AktualneLoty extends javax.swing.JFrame {
             }
         });
 
-        jLabel4.setText("Rezerwuj");
-
-        jLabel5.setText("Kup");
-
         javax.swing.GroupLayout panelZamowienLayout = new javax.swing.GroupLayout(panelZamowien);
         panelZamowien.setLayout(panelZamowienLayout);
         panelZamowienLayout.setHorizontalGroup(
             panelZamowienLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelZamowienLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addGap(26, 26, 26))
+            .addGap(0, 137, Short.MAX_VALUE)
         );
         panelZamowienLayout.setVerticalGroup(
             panelZamowienLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelZamowienLayout.createSequentialGroup()
-                .addGroup(panelZamowienLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5))
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addGap(0, 328, Short.MAX_VALUE)
         );
 
         wykonajPrzycisk.setText("Wykonaj");
@@ -261,6 +245,8 @@ public class AktualneLoty extends javax.swing.JFrame {
         // TODO add your handling code here:
         String przylotyOdloty = null;
         String klasa = (String)klasaComboBox.getSelectedItem();
+        JLabel rezerwacja = new JLabel("Rezerwuj");
+        JLabel kupno = new JLabel("Kup");
         
         if( jCheckBox1.isSelected() )
         {
@@ -290,10 +276,14 @@ public class AktualneLoty extends javax.swing.JFrame {
             }
             
             listCheckBoxes.clear();
+            panelZamowien.remove(rezerwacja);
+            panelZamowien.remove(kupno);
 
             if( listaLotow!= null )
             {
-                panelZamowien.setLayout(new GridLayout(0,2, 10, 10));
+                panelZamowien.setLayout(new MigLayout("","","[]12[]"));
+                panelZamowien.add(rezerwacja);
+                panelZamowien.add(kupno, "wrap");
 
                 for( int i=0; i<listaLotow.size(); i++ )
                 {
@@ -306,12 +296,10 @@ public class AktualneLoty extends javax.swing.JFrame {
                     listCheckBoxes.add(rezerwuj);
                     listCheckBoxes.add(kup);
                     panelZamowien.add(rezerwuj);
-                    panelZamowien.add(kup);
+                    panelZamowien.add(kup, "wrap");
                     zamowienia.add(rezerwuj);
                     zamowienia.add(kup);
                 }
-                jLabel4.setVisible(true);
-                jLabel5.setVisible(true);
                 panelZamowien.revalidate();
                 panelZamowien.repaint();
             }
@@ -456,8 +444,6 @@ public class AktualneLoty extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
