@@ -12,6 +12,7 @@ public class RezerwacjaBean
     String rezerwacjaData;
     String rezerwacjaRzadMiejsce;
     String rezerwacjaKlasa;
+    float rezerwacjaKwota;
 
     public Integer getRezerwacjaID() {
         return rezerwacjaID;
@@ -61,5 +62,11 @@ public class RezerwacjaBean
         this.rezerwacjaKlasa = rezerwacjaKlasa;
     }
     
-    
+    public float getRezerwacjaKwota() {
+        return rezerwacjaKwota;
+    }
+
+    public void setRezerwacjaKwota(float rezerwacjaKwota) {
+        this.rezerwacjaKwota = rezerwacjaKwota;
+    }
 }

@@ -1,9 +1,5 @@
 package Beany;
 
-
-import java.sql.Date;
-
-
 public class ZakupBean 
 {
     Integer zakupID;
@@ -69,6 +65,4 @@ public class ZakupBean
     public void setZakupKwota(float zakupKwota) {
         this.zakupKwota = zakupKwota;
     }
-    
-    
 }

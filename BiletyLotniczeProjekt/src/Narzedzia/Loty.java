@@ -29,6 +29,8 @@ public class Loty
     
     private final String POBRANIE_ZAJETYCH_MIEJSC = "SELECT ZKP_RZAD_MIEJSCE, RZR_RZAD_MIEJSCE FROM ZAKUPY, REZERWACJE WHERE ZKP_LOT_ID=? AND ZKP_LOT_ID=RZR_LOT_ID";
     
+    private final String POBIERZ_DATE_LOTU = "SELECT LOT_DATA_ODLOTU FROM LOTY WHERE LOT_ID=?";
+    
     Connection connection = null;
     DBConnector dbConnector = null;
     PreparedStatement ps = null;
@@ -366,5 +368,31 @@ public class Loty
             rs.close();
         }
         return miejsca;
+    }
+    public String pobierzDateLotu( Integer IDLotu ) throws SQLException
+    {
+        connection = dbConnector.setConnection();
+        String dataLodu = null;
+        try
+        {
+            ps = connection.prepareStatement( POBIERZ_DATE_LOTU );
+            ps.setObject(1, IDLotu);
+            rs = ps.executeQuery();
+            while(rs.next())
+            {
+                dataLodu = rs.getString(1);
+            }  
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            connection.close();
+            ps.close();
+            rs.close();
+        }
+        return dataLodu;
     }
 }

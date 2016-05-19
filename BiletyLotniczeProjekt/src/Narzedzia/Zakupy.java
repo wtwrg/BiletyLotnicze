@@ -17,12 +17,14 @@ public class Zakupy
 {
     public static final String POBIERZ_DOSTEPNE_SRODKI = "SELECT UZT_SALDO FROM UZYTKOWNICY WHERE UZT_ID=?";
     public static final String UAKTUALNIJ_SRODKI = "UPDATE uzytkownicy SET UZT_SALDO=? WHERE UZT_ID=?";
-    private final String REZERWACJA_LOTU = "INSERT INTO rezerwacje (RZR_UZT_ID, RZR_LOT_ID, RZR_DATA, RZR_RZAD_MIEJSCE, RZR_KLASA) VALUES (?,?,NOW(),?,?)";
+    private final String REZERWACJA_LOTU = "INSERT INTO rezerwacje (RZR_UZT_ID, RZR_LOT_ID, RZR_DATA, RZR_RZAD_MIEJSCE, RZR_KLASA, RZR_KWOTA) VALUES (?,?,NOW(),?,?,?)";
     private final String KUPNO_LOTU = "INSERT INTO zakupy (ZKP_UZT_ID, ZKP_LOT_ID, ZKP_DATA, ZKP_RZAD_MIEJSCE, ZKP_KLASA, ZKP_KWOTA) VALUES (?,?,NOW(),?,?,?)";
     private final String POBRANIE_ZAKUPOW = "SELECT * FROM ZAKUPY WHERE ZKP_UZT_ID=?";
     private final String POBRANIE_REZERWACJI = "SELECT * FROM REZERWACJE WHERE RZR_UZT_ID=?";
     private final String POBIERZ_LOTNISKO_DLA_REZERWACJI = "SELECT LTN_NAZWA FROM LOTNISKO, LOTY, REZERWACJE WHERE LTN_ID=LOT_LOTNISKO_ID AND LOT_ID=RZR_LOT_ID AND RZR_ID=?";
     private final String POBIERZ_LOTNISKO_DLA_ZAKUPU = "SELECT LTN_NAZWA FROM LOTNISKO, LOTY, ZAKUPY WHERE LTN_ID=LOT_LOTNISKO_ID AND LOT_ID=ZKP_LOT_ID AND ZKP_ID=?";
+    private final String USUN_REZERWACJE = "DELETE FROM REZERWACJE WHERE RZR_ID=?";
+    private final String USUN_ZAKUP = "DELETE FROM ZAKUPY WHERE ZKP_ID=?";
 
     public final static String ZAKUP = "Zakup";
     public final static String REZERWACJA = "Rezerwacja";
@@ -106,7 +108,7 @@ public class Zakupy
             }
             
             connection = dbConnector.setConnection();
-            String klasa = null;
+            String klasa = wybranaKlasa;
             if( wybranaKlasa.equals( SamolotBean.KLASA_EKONOMICZNA ) )
             {
                 klasa = "E";
@@ -130,6 +132,7 @@ public class Zakupy
                 ps.setObject(2, IDLotu);
                 ps.setObject(3, wybraneMiejsce);
                 ps.setObject(4, klasa);
+                ps.setObject(5, cena);
                 isInserted = ps.executeUpdate();
             }
             else if( wybranaOpcja.contains("kup") )
@@ -166,21 +169,21 @@ public class Zakupy
         for( ZakupBean zakupBean : listaZakupow )
         {
             Object[] zakup = null;
-            zakup = new Object[]{ ZAKUP, zakupBean.getZakupData(), pobierzLotniskoZakupu(zakupBean.getZakupID()), zakupBean.getZakupKwota() };
+            zakup = new Object[]{ ZAKUP, zakupBean.getZakupData(), pobierzLotniskoZakupu(zakupBean.getZakupID()), zakupBean.getZakupKwota(), zakupBean.getZakupLotID() };
             zakupyIRezerwacje.add(zakup);
         }
         
         for( RezerwacjaBean rezerwacjaBean : listaRezerwacji )
         {
             Object[] zakup = null;
-            zakup = new Object[]{ REZERWACJA, rezerwacjaBean.getRezerwacjaData(), pobierzLotniskoDlaRezerwacji(rezerwacjaBean.getRezerwacjaID()), null };
+            zakup = new Object[]{ REZERWACJA, rezerwacjaBean.getRezerwacjaData(), pobierzLotniskoDlaRezerwacji(rezerwacjaBean.getRezerwacjaID()), rezerwacjaBean.getRezerwacjaKwota(), rezerwacjaBean.getRezerwacjaLotID() };
             zakupyIRezerwacje.add(zakup);
         }
         
         return zakupyIRezerwacje;
     }
     
-    private List<ZakupBean> pobierzZakupy( Integer IDuzytkownika ) throws SQLException
+    public List<ZakupBean> pobierzZakupy( Integer IDuzytkownika ) throws SQLException
     {
         connection = dbConnector.setConnection();
         List<ZakupBean> listaLotyBean = new ArrayList<ZakupBean>();
@@ -205,7 +208,7 @@ public class Zakupy
         return listaLotyBean;
     }
     
-    private List<RezerwacjaBean> pobierzRezerwacje( Integer IDuzytkownika ) throws SQLException
+    public List<RezerwacjaBean> pobierzRezerwacje( Integer IDuzytkownika ) throws SQLException
     {
         connection = dbConnector.setConnection();
         List<RezerwacjaBean> listaRezerwacjaBean = new ArrayList<RezerwacjaBean>();
@@ -284,5 +287,44 @@ public class Zakupy
             rs.close();
         }
         return lotnisko;
+    }
+    
+    public void usunRezerwacje( Integer IDRezerwacji ) throws SQLException
+    {
+        connection = dbConnector.setConnection();
+        try
+        {
+            ps = connection.prepareStatement( USUN_REZERWACJE );
+            ps.setObject(1, IDRezerwacji);
+            ps.executeUpdate();
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            connection.close();
+            ps.close();
+        }
+    }
+    public void usunZakup( Integer IDZakupu ) throws SQLException
+    {
+        connection = dbConnector.setConnection();
+        try
+        {
+            ps = connection.prepareStatement( USUN_ZAKUP );
+            ps.setObject(1, IDZakupu);
+            ps.executeUpdate();
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            connection.close();
+            ps.close();
+        }
     }
 }
