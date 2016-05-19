@@ -109,7 +109,7 @@ public class Konto extends javax.swing.JFrame {
                             JLabel anuluj = new JLabel("Anuluj");
                             anuluj.setFont(new Font("Serif", Font.PLAIN, 10));
                             anuluj.setName("anulujRezerwacje"+i);
-                            panelAnulowania.add(anuluj);
+                            panelAnulowania.add(anuluj, "wrap");
                             anuluj.addMouseListener(new MouseAdapter() 
                             {
                                 @Override
@@ -174,7 +174,7 @@ public class Konto extends javax.swing.JFrame {
                             JLabel anuluj = new JLabel("Anuluj");
                             anuluj.setFont(new Font("Serif", Font.PLAIN, 10));
                             anuluj.setName("anulujZakup"+i);
-                            panelAnulowania.add(anuluj);
+                            panelAnulowania.add(anuluj, "wrap");
                             anuluj.addMouseListener(new MouseAdapter() 
                             {
                                 @Override
@@ -202,15 +202,6 @@ public class Konto extends javax.swing.JFrame {
                 }
                 panelZakupow.revalidate();
                 panelZakupow.repaint();
-    }
-    
-    private static class JTableButtonRenderer implements TableCellRenderer 
-    {        
-        @Override 
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JButton button = (JButton)value;
-            return button;  
-        }
     }
 
     /**
