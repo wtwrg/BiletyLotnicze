@@ -1,5 +1,10 @@
 package Formatki;
 
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -170,7 +175,19 @@ public class Logowanie extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AktualneLoty().setVisible(true);
+                try 
+                {
+                    new Konto().setVisible(true);
+                } 
+                catch (SQLException ex) 
+                {
+                    Logger.getLogger(Logowanie.class.getName()).log(Level.SEVERE, null, ex);
+                } 
+                catch (ParseException ex) 
+                {
+                    Logger.getLogger(Logowanie.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                //new AktualneLoty().setVisible(true);
             }
         });
     }
