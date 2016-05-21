@@ -4,7 +4,6 @@ import Beany.RezerwacjaBean;
 import Beany.ZakupBean;
 import Narzedzia.Loty;
 import Narzedzia.Zakupy;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -17,12 +16,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 import net.miginfocom.swing.MigLayout;
 
 /*
@@ -73,6 +71,9 @@ public class Konto extends javax.swing.JFrame {
     private void ustawZakupy( List<Object[]> listaZakupow ) throws ParseException
     {
         DefaultTableModel model = (DefaultTableModel) zakupyTabela.getModel();
+        boolean pierwszePotwierdzenie = true;
+        boolean pierwszeKupno = true;
+        boolean pierwszeAnuluj = true;
             
             int rekordy = model.getRowCount();
             for( int i=0; i < rekordy; i++ )
@@ -109,30 +110,63 @@ public class Konto extends javax.swing.JFrame {
                             JLabel anuluj = new JLabel("Anuluj");
                             anuluj.setFont(new Font("Serif", Font.PLAIN, 10));
                             anuluj.setName("anulujRezerwacje"+i);
-                            panelAnulowania.add(anuluj, "wrap");
+                            if( pierwszeAnuluj )
+                            {
+                                panelAnulowania.add(anuluj, "wrap, gaptop 20");
+                                pierwszeAnuluj = false;
+                            }
+                            else
+                            {
+                                panelAnulowania.add(anuluj, "wrap");
+                            }
                             anuluj.addMouseListener(new MouseAdapter() 
                             {
                                 @Override
                                 public void mouseClicked(MouseEvent e) 
                                 {
-                                    String indeks = String.valueOf(anuluj.getName().charAt(anuluj.getName().length()-1));
-                                    int intIndeks = Integer.valueOf(indeks)-listaZakupy.size();
-                                    RezerwacjaBean rb = listaRezerwacji.get(intIndeks);
-                                    try 
+                                    int odpowiedz = JOptionPane.showConfirmDialog(null, "Na pewno chcesz anulować?", "", JOptionPane.YES_NO_OPTION);
+                                    if( odpowiedz == 0 )
                                     {
-                                        zakupy.usunRezerwacje(rb.getRezerwacjaID());
-                                    } 
-                                    catch (SQLException ex) 
-                                    {
-                                        Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
+                                        String indeks = String.valueOf(anuluj.getName().charAt(anuluj.getName().length()-1));
+                                        int intIndeks = Integer.valueOf(indeks)-listaZakupy.size();
+                                        RezerwacjaBean rb = listaRezerwacji.get(intIndeks);
+                                        try 
+                                        {
+                                            zakupy.usunRezerwacje(rb.getRezerwacjaID());
+                                        } 
+                                        catch (SQLException ex) 
+                                        {
+                                            Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
                                     }
+                                    JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(panelAnulowania);
+                                    topFrame.invalidate();
+                                }
+                                @Override
+                                public void mouseEntered(MouseEvent e) 
+                                {
+                                    anuluj.setFont(new Font("Serif", Font.BOLD, 10));
+                                }
+
+                                @Override
+                                public void mouseExited(MouseEvent e) 
+                                {
+                                    anuluj.setFont(new Font("Serif", Font.PLAIN, 10));
                                 }
                             });
                         }
                         JLabel pokazPDF = new JLabel("Potwierdzenie");
                         pokazPDF.setFont(new Font("Serif", Font.PLAIN, 10));
                         pokazPDF.setName("pokazPDF"+i);
-                        panelZakupow.add(pokazPDF, "gapright 20");
+                        if( pierwszePotwierdzenie )
+                        {
+                            panelZakupow.add(pokazPDF, "gaptop 20, gapright 10");
+                            pierwszePotwierdzenie = false;
+                        }
+                        else
+                        {
+                            panelZakupow.add(pokazPDF, "gapright 10");
+                        }
                         
                         JLabel kup = new JLabel("Kup");
                         kup.setFont(new Font("Serif", Font.PLAIN, 10));
@@ -164,8 +198,28 @@ public class Konto extends javax.swing.JFrame {
                                     }
                                 }
                             }
+                            @Override
+                            public void mouseEntered(MouseEvent e) 
+                            {
+                                kup.setFont(new Font("Serif", Font.BOLD, 10));
+                            }
+                            
+                            @Override
+                            public void mouseExited(MouseEvent e) 
+                            {
+                                kup.setFont(new Font("Serif", Font.PLAIN, 10));
+                            }
                         });
-                        panelZakupow.add(kup, "wrap");
+                        
+                        if( pierwszeKupno && pierwszePotwierdzenie )
+                        {
+                            panelZakupow.add(kup, "wrap, gaptop 20");
+                            pierwszeKupno = false;
+                        }
+                        else
+                        {
+                            panelZakupow.add(kup, "wrap");
+                        }
                     }
                     else
                     {
@@ -174,30 +228,62 @@ public class Konto extends javax.swing.JFrame {
                             JLabel anuluj = new JLabel("Anuluj");
                             anuluj.setFont(new Font("Serif", Font.PLAIN, 10));
                             anuluj.setName("anulujZakup"+i);
-                            panelAnulowania.add(anuluj, "wrap");
+                            if( pierwszeAnuluj )
+                            {
+                                panelAnulowania.add(anuluj, "wrap, gaptop 20");
+                                pierwszeAnuluj = false;
+                            }
+                            else
+                            {
+                                panelAnulowania.add(anuluj, "wrap");
+                            }
                             anuluj.addMouseListener(new MouseAdapter() 
                             {
                                 @Override
                                 public void mouseClicked(MouseEvent e) 
                                 {
-                                    String indeks = String.valueOf(anuluj.getName().charAt(anuluj.getName().length()-1));
-                                    int intIndeks = Integer.valueOf(indeks);
-                                    ZakupBean zb = listaZakupy.get(intIndeks);
-                                    try 
+                                    int odpowiedz = JOptionPane.showConfirmDialog(null, "Na pewno chcesz anulować?", "", JOptionPane.YES_NO_OPTION);
+                                    if( odpowiedz == 0 )
                                     {
-                                        zakupy.usunZakup(zb.getZakupID());
-                                    } 
-                                    catch (SQLException ex) 
-                                    {
-                                        Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
+                                        String indeks = String.valueOf(anuluj.getName().charAt(anuluj.getName().length()-1));
+                                        int intIndeks = Integer.valueOf(indeks);
+                                        ZakupBean zb = listaZakupy.get(intIndeks);
+                                        try 
+                                        {
+                                            zakupy.usunZakup(zb.getZakupID());
+                                        } 
+                                        catch (SQLException ex) 
+                                        {
+                                            Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
                                     }
+                                }
+                                
+                                 @Override
+                                public void mouseEntered(MouseEvent e) 
+                                {
+                                    anuluj.setFont(new Font("Serif", Font.BOLD, 10));
+                                }
+
+                                @Override
+                                public void mouseExited(MouseEvent e) 
+                                {
+                                    anuluj.setFont(new Font("Serif", Font.PLAIN, 10));
                                 }
                             });
                         }
                         JLabel pokazPDF = new JLabel("Potwierdzenie");
                         pokazPDF.setFont(new Font("Serif", Font.PLAIN, 10));
                         pokazPDF.setName("pokazPDF"+i);
-                        panelZakupow.add(pokazPDF, "wrap");
+                        if( pierwszePotwierdzenie )
+                        {
+                            panelZakupow.add(pokazPDF, "wrap, gaptop 18");
+                            pierwszePotwierdzenie = false;
+                        }
+                        else
+                        {
+                            panelZakupow.add(pokazPDF, "wrap");
+                        }
                     }
                 }
                 panelZakupow.revalidate();
@@ -290,8 +376,9 @@ public class Konto extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(8, 8, 8)
                 .addComponent(panelAnulowania, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 649, javax.swing.GroupLayout.PREFERRED_SIZE)

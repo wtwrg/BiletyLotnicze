@@ -1,9 +1,5 @@
 package Beany;
 
-
-import java.sql.Date;
-
-
 public class RezerwacjaBean 
 {
     Integer rezerwacjaID;
