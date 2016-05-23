@@ -25,10 +25,14 @@ public class WiadomoscBean
     
     public static final String TEMAT_NOWY_ZAKUP = "Nowy zakup";
     public static final String TEMAT_NOWA_REZERWACJA = "Nowa rezerwacja";
+    public static final String TEMAT_ANULOWANIE = "Anulowanie lotu przez użytkownika";
+    public static final String TEMAT_PDF = "Potwierdzenie PDF";
     
-    public static final String TRESC_NOWY_ZAKUP_REZERWACJA = "Uzytkownik ID ? dokonał ?.";
+    public static final String TRESC_NOWA_AKCJA_UZYTKOWNIK = "Uzytkownik ID ? dokonał ?.";
     public static final String TRESC_NOWA_REZERWACJA = "nowej rezerwacji";
     public static final String TRESC_NOWY_ZAKUP = "nowego zakupu";
+    public static final String TRESC_ANULOWANIE = "anulowania lotu ID ?";
+    public static final String TRESC_PDF = "Wygenerowano nowe potwierdzenie PDF dla uzytkownika ID ?.";
     
     Integer wiadomoscID;
     Integer wiadomoscIDOdbiorcy;

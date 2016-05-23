@@ -21,25 +21,34 @@
             <Property name="text" type="java.lang.String" value="Szukaj"/>
           </Properties>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu2">
+        <Menu class="javax.swing.JMenu" name="mojeKonroMenu">
           <Properties>
             <Property name="text" type="java.lang.String" value="Moje konto"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="mojeKonroMenuMouseClicked"/>
+          </Events>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu3">
+        <Menu class="javax.swing.JMenu" name="wiaodmosci">
           <Properties>
             <Property name="text" type="java.lang.String" value="Wiadomo&#x15b;ci"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="wiaodmosciMouseClicked"/>
+          </Events>
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenu4">
           <Properties>
             <Property name="text" type="java.lang.String" value="Wyloguj"/>
           </Properties>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu5">
+        <Menu class="javax.swing.JMenu" name="wyjscie">
           <Properties>
             <Property name="text" type="java.lang.String" value="Wyj&#x15b;cie"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="wyjscieMouseClicked"/>
+          </Events>
         </Menu>
       </SubComponents>
     </Menu>

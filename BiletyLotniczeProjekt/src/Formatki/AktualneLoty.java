@@ -2,14 +2,19 @@ package Formatki;
 
 import Beany.LotBean;
 import Narzedzia.Loty;
+import Narzedzia.PDF;
 import Narzedzia.Powiadomienia;
 import Narzedzia.Zakupy;
 import java.awt.BorderLayout;
 import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,9 +27,11 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import net.miginfocom.swing.MigLayout;
 
@@ -50,6 +57,8 @@ public class AktualneLoty extends javax.swing.JFrame {
     List<Object[]> listaLotow;
     Powiadomienia powiadomienia;
     Zakupy zakupy;
+    PDF pdf;
+    JFrame parentFrame;
     
     public AktualneLoty() {
         initComponents();
@@ -61,6 +70,14 @@ public class AktualneLoty extends javax.swing.JFrame {
         loty = new Loty();
         powiadomienia = new Powiadomienia();
         zakupy = new Zakupy();
+        pdf = new PDF();
+        parentFrame = (JFrame)SwingUtilities.getRoot(panelZamowien);
+    }
+    
+    private void refresh() throws ParseException, Exception
+    {
+        new AktualneLoty().setVisible(true);
+        parentFrame.dispose();
     }
 
     /**
@@ -87,10 +104,10 @@ public class AktualneLoty extends javax.swing.JFrame {
         wykonajPrzycisk = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
+        mojeKonroMenu = new javax.swing.JMenu();
+        wiaodmosci = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
-        jMenu5 = new javax.swing.JMenu();
+        wyjscie = new javax.swing.JMenu();
 
         jCheckBoxMenuItem1.setSelected(true);
         jCheckBoxMenuItem1.setText("jCheckBoxMenuItem1");
@@ -170,17 +187,32 @@ public class AktualneLoty extends javax.swing.JFrame {
         jMenu1.setText("Szukaj");
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Moje konto");
-        jMenuBar1.add(jMenu2);
+        mojeKonroMenu.setText("Moje konto");
+        mojeKonroMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mojeKonroMenuMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(mojeKonroMenu);
 
-        jMenu3.setText("Wiadomości");
-        jMenuBar1.add(jMenu3);
+        wiaodmosci.setText("Wiadomości");
+        wiaodmosci.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                wiaodmosciMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(wiaodmosci);
 
         jMenu4.setText("Wyloguj");
         jMenuBar1.add(jMenu4);
 
-        jMenu5.setText("Wyjście");
-        jMenuBar1.add(jMenu5);
+        wyjscie.setText("Wyjście");
+        wyjscie.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                wyjscieMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(wyjscie);
 
         setJMenuBar(jMenuBar1);
 
@@ -330,8 +362,19 @@ public class AktualneLoty extends javax.swing.JFrame {
         else
         {
             String wybranaOpcja2 = wybranaOpcja;
-            String numerLotu = String.valueOf(wybranaOpcja.charAt(wybranaOpcja.length()-1));
-            String rodzajZamowienia = wybranaOpcja.substring(0, wybranaOpcja.length()-1);
+            String numerLotu = null;
+            String rodzajZamowienia= null;
+            
+            if( wybranaOpcja2.contains("rezerwuj") )
+            {
+                 numerLotu = wybranaOpcja2.replaceAll("rezerwuj", "");
+                 rodzajZamowienia = Zakupy.REZERWACJA;
+            }
+            else if( wybranaOpcja.contains("kup") )
+            {
+                numerLotu = wybranaOpcja2.replaceAll("kup", "");
+                rodzajZamowienia = Zakupy.ZAKUP;
+            }
 
             Object[] wybranyLot = listaLotow.get(Integer.parseInt(numerLotu));
             
@@ -392,6 +435,14 @@ public class AktualneLoty extends javax.swing.JFrame {
                             {
                                 JOptionPane.showMessageDialog(panelZamowien, "Zlecenie zrealizowane.");
                                 powiadomienia.potwierdzenieRezerwacjiKupna( wybranaOpcja2, String.valueOf(1) );
+                                if( wybranaOpcja2.contains("kup") )
+                                {
+                                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                                    Date date = new Date();
+                                    pdf.stworzPDF(String.valueOf(zakupy.last_inserted_id), String.valueOf(wybranyLot[6]), String.valueOf(wybranyLot[1]), String.valueOf(wybranyLot[5]), wybraneMiejsce, String.valueOf(dateFormat.format(date)));
+                                    powiadomienia.wygenerowanieNowegoPotwierdzeniaPDF( 1 );
+                                }
+                                refresh();
                             }
                             else if( isInserted == 2 )
                             {
@@ -405,6 +456,10 @@ public class AktualneLoty extends javax.swing.JFrame {
                         } 
                         catch (SQLException ex) 
                         {
+                            Logger.getLogger(AktualneLoty.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(AktualneLoty.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (Exception ex) {
                             Logger.getLogger(AktualneLoty.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
@@ -436,6 +491,29 @@ public class AktualneLoty extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_wykonajPrzyciskActionPerformed
 
+    private void mojeKonroMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mojeKonroMenuMouseClicked
+        try {
+            // TODO add your handling code here:
+            new Konto().setVisible(true);
+        } catch (ParseException ex) {
+            Logger.getLogger(AktualneLoty.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(AktualneLoty.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        parentFrame.dispose();
+    }//GEN-LAST:event_mojeKonroMenuMouseClicked
+
+    private void wyjscieMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_wyjscieMouseClicked
+        // TODO add your handling code here:
+        parentFrame.dispose();
+    }//GEN-LAST:event_wyjscieMouseClicked
+
+    private void wiaodmosciMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_wiaodmosciMouseClicked
+        // TODO add your handling code here:
+        new WiadomoscUzytkownik().setVisible(true);
+        parentFrame.dispose();
+    }//GEN-LAST:event_wiaodmosciMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox jCheckBox1;
@@ -445,16 +523,16 @@ public class AktualneLoty extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JComboBox<String> klasaComboBox;
     private javax.swing.JTable listaAktualnychLotow;
+    private javax.swing.JMenu mojeKonroMenu;
     private javax.swing.JPanel panelZamowien;
+    private javax.swing.JMenu wiaodmosci;
+    private javax.swing.JMenu wyjscie;
     private javax.swing.JButton wykonajPrzycisk;
     private javax.swing.JButton wyszukajPrzycisk;
     // End of variables declaration//GEN-END:variables

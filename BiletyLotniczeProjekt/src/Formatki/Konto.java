@@ -3,10 +3,14 @@ package Formatki;
 import Beany.RezerwacjaBean;
 import Beany.ZakupBean;
 import Narzedzia.Loty;
+import Narzedzia.PDF;
+import Narzedzia.Powiadomienia;
 import Narzedzia.Zakupy;
+import com.itextpdf.text.DocumentException;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.Date;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -44,12 +48,16 @@ public class Konto extends javax.swing.JFrame {
     List<RezerwacjaBean> listaRezerwacji;
     List<ZakupBean> listaZakupy;
     Loty loty;
+    PDF pdf;
+    Powiadomienia powiadomienia;
+    JFrame parentFrame;
     
-    public Konto() throws SQLException, ParseException 
+    public Konto() throws SQLException, ParseException, Exception 
     {
         initComponents();
         zakupy = new Zakupy();
         loty = new Loty();
+        pdf = new PDF();
         try 
         {
             dostepneSrodki = zakupy.pobierzDostepneSrodki(1);
@@ -66,6 +74,8 @@ public class Konto extends javax.swing.JFrame {
         }
         listaRezerwacji = zakupy.pobierzRezerwacje( 1 );
         listaZakupy = zakupy.pobierzZakupy( 1 );
+        powiadomienia = new Powiadomienia();
+        parentFrame = (JFrame)SwingUtilities.getRoot(jPanel1);
     }
     
     private void ustawZakupy( List<Object[]> listaZakupow ) throws ParseException
@@ -87,16 +97,7 @@ public class Konto extends javax.swing.JFrame {
                 {
                     Object[] lot = listaZakupow.get(i);
                     model.addRow(lot);
-                    String dataLotu = null;
-                    try
-                    {
-                        dataLotu = loty.pobierzDateLotu((Integer)lot[4]);
-                    }
-                    catch (SQLException ex) 
-                    {
-                        Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    
+                    String dataLotu = lot[2].toString();
                     DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
                     Date dataLot = (Date) format.parse(dataLotu);
                     Date obecnaData = new Date();
@@ -127,15 +128,19 @@ public class Konto extends javax.swing.JFrame {
                                     int odpowiedz = JOptionPane.showConfirmDialog(null, "Na pewno chcesz anulować?", "", JOptionPane.YES_NO_OPTION);
                                     if( odpowiedz == 0 )
                                     {
-                                        String indeks = String.valueOf(anuluj.getName().charAt(anuluj.getName().length()-1));
+                                        String indeks = anuluj.getName().replaceAll("anulujRezerwacje", "");
                                         int intIndeks = Integer.valueOf(indeks)-listaZakupy.size();
                                         RezerwacjaBean rb = listaRezerwacji.get(intIndeks);
                                         try 
                                         {
                                             zakupy.usunRezerwacje(rb.getRezerwacjaID());
+                                            powiadomienia.anulowanieLotuPrzezUzytkownika( rb.getRezerwacjaLotID(), 1 );
+                                            refresh();
                                         } 
                                         catch (SQLException ex) 
                                         {
+                                            Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (Exception ex) {
                                             Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
                                         }
                                     }
@@ -155,17 +160,18 @@ public class Konto extends javax.swing.JFrame {
                                 }
                             });
                         }
-                        JLabel pokazPDF = new JLabel("Potwierdzenie");
-                        pokazPDF.setFont(new Font("Serif", Font.PLAIN, 10));
-                        pokazPDF.setName("pokazPDF"+i);
-                        if( pierwszePotwierdzenie )
-                        {
-                            panelZakupow.add(pokazPDF, "gaptop 20, gapright 10");
-                            pierwszePotwierdzenie = false;
-                        }
                         else
                         {
-                            panelZakupow.add(pokazPDF, "gapright 10");
+                            JLabel pustyString = new JLabel("-");
+                            if( pierwszeAnuluj )
+                            {
+                                panelAnulowania.add(pustyString, "wrap, gaptop 20");
+                                pierwszeAnuluj = false;
+                            }
+                            else
+                            {
+                                panelAnulowania.add(pustyString, "wrap");
+                            }
                         }
                         
                         JLabel kup = new JLabel("Kup");
@@ -180,7 +186,7 @@ public class Konto extends javax.swing.JFrame {
                                 int odpowiedz = JOptionPane.showConfirmDialog(null, "Na pewno chcesz kupić?", "", JOptionPane.YES_NO_OPTION);
                                 if( odpowiedz == 0 )
                                 {
-                                    String indeks = String.valueOf(kup.getName().charAt(kup.getName().length()-1));
+                                    String indeks = kup.getName().replaceAll("kup", "");
                                     int intIndeks = Integer.valueOf(indeks)-listaZakupy.size();
                                     RezerwacjaBean rb = listaRezerwacji.get(intIndeks);
                                     try 
@@ -190,10 +196,20 @@ public class Konto extends javax.swing.JFrame {
                                         {
                                             JOptionPane.showMessageDialog(null, "Zakupiono pomyślnie.");
                                             zakupy.usunRezerwacje(rb.getRezerwacjaID());
+                                            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                                            Date date = new Date();
+                                            List<String> lista = loty.pobierzDateLotuILotnisko(rb.getRezerwacjaLotID());
+                                            pdf.stworzPDF(String.valueOf(zakupy.last_inserted_id), lista.get(0), lista.get(1), String.valueOf(rb.getRezerwacjaKwota()), rb.getRezerwacjaRzadMiejsce(), String.valueOf(dateFormat.format(date)));
+                                            powiadomienia.wygenerowanieNowegoPotwierdzeniaPDF( 1 );
+                                            refresh();
                                         }
                                     } 
                                     catch (SQLException ex) 
                                     {
+                                        Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (IOException ex) {
+                                        Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (Exception ex) {
                                         Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
                                     }
                                 }
@@ -245,15 +261,19 @@ public class Konto extends javax.swing.JFrame {
                                     int odpowiedz = JOptionPane.showConfirmDialog(null, "Na pewno chcesz anulować?", "", JOptionPane.YES_NO_OPTION);
                                     if( odpowiedz == 0 )
                                     {
-                                        String indeks = String.valueOf(anuluj.getName().charAt(anuluj.getName().length()-1));
+                                        String indeks = anuluj.getName().replaceAll("anulujZakup", "");
                                         int intIndeks = Integer.valueOf(indeks);
                                         ZakupBean zb = listaZakupy.get(intIndeks);
                                         try 
                                         {
-                                            zakupy.usunZakup(zb.getZakupID());
+                                            zakupy.usunZakup(zb.getZakupID(), zb.getZakupUzytkownikID(), zb.getZakupKwota());
+                                            powiadomienia.anulowanieLotuPrzezUzytkownika( zb.getZakupLotID(), 1 );
+                                            refresh();
                                         } 
                                         catch (SQLException ex) 
                                         {
+                                            Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (Exception ex) {
                                             Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
                                         }
                                     }
@@ -272,6 +292,20 @@ public class Konto extends javax.swing.JFrame {
                                 }
                             });
                         }
+                        else
+                        {
+                            JLabel pustyString = new JLabel("-");
+                            if( pierwszeAnuluj )
+                            {
+                                panelAnulowania.add(pustyString, "wrap, gaptop 20");
+                                pierwszeAnuluj = false;
+                            }
+                            else
+                            {
+                                panelAnulowania.add(pustyString, "wrap");
+                            }
+                        }
+                        
                         JLabel pokazPDF = new JLabel("Potwierdzenie");
                         pokazPDF.setFont(new Font("Serif", Font.PLAIN, 10));
                         pokazPDF.setName("pokazPDF"+i);
@@ -284,10 +318,50 @@ public class Konto extends javax.swing.JFrame {
                         {
                             panelZakupow.add(pokazPDF, "wrap");
                         }
+                        pokazPDF.addMouseListener(new MouseAdapter() 
+                        {
+                            @Override
+                            public void mouseClicked(MouseEvent e) 
+                            {
+                                String indeks = pokazPDF.getName().replaceAll("pokazPDF", "");
+                                int intIndeks = Integer.valueOf(indeks);
+                                ZakupBean zb = listaZakupy.get(intIndeks);
+                                try 
+                                {
+                                    pdf.pokazPDF( String.valueOf(zb.getZakupID()) );
+                                } 
+                                catch (DocumentException ex) {
+                                    Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
+                                } 
+                                catch (IOException ex) {
+                                    Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
+                                } 
+                                catch (SQLException ex) {
+                                    Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                            @Override
+                            public void mouseEntered(MouseEvent e) 
+                            {
+                                pokazPDF.setFont(new Font("Serif", Font.BOLD, 10));
+                            }
+                            
+                            @Override
+                            public void mouseExited(MouseEvent e) 
+                            {
+                                pokazPDF.setFont(new Font("Serif", Font.PLAIN, 10));
+                            }
+                        });
                     }
                 }
                 panelZakupow.revalidate();
                 panelZakupow.repaint();
+    }
+    
+    private void refresh() throws ParseException, Exception
+    {
+        new Konto().setVisible(true);
+        parentFrame.dispose();
     }
 
     /**
@@ -310,11 +384,11 @@ public class Konto extends javax.swing.JFrame {
         panelZakupow = new javax.swing.JPanel();
         panelAnulowania = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
+        szukajMenu = new javax.swing.JMenu();
+        mojeKontoMenu = new javax.swing.JMenu();
+        wiadomosci = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
-        jMenu5 = new javax.swing.JMenu();
+        wyjscie = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -331,11 +405,11 @@ public class Konto extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Status", "Data", "Lot", "Kwota"
+                "Status", "Data zakupu", "Data lotu", "Lot", "Kwota"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -343,6 +417,14 @@ public class Konto extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(zakupyTabela);
+        if (zakupyTabela.getColumnModel().getColumnCount() > 0) {
+            zakupyTabela.getColumnModel().getColumn(0).setMinWidth(100);
+            zakupyTabela.getColumnModel().getColumn(0).setPreferredWidth(100);
+            zakupyTabela.getColumnModel().getColumn(0).setMaxWidth(100);
+            zakupyTabela.getColumnModel().getColumn(4).setMinWidth(70);
+            zakupyTabela.getColumnModel().getColumn(4).setPreferredWidth(70);
+            zakupyTabela.getColumnModel().getColumn(4).setMaxWidth(70);
+        }
 
         jLabel3.setFont(new java.awt.Font("Calibri", 3, 12)); // NOI18N
         jLabel3.setText("zł");
@@ -413,20 +495,35 @@ public class Konto extends javax.swing.JFrame {
                     .addComponent(panelAnulowania, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
-        jMenu1.setText("Szukaj");
-        jMenuBar1.add(jMenu1);
+        szukajMenu.setText("Szukaj");
+        szukajMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                szukajMenuMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(szukajMenu);
 
-        jMenu2.setText("Moje konto");
-        jMenuBar1.add(jMenu2);
+        mojeKontoMenu.setText("Moje konto");
+        jMenuBar1.add(mojeKontoMenu);
 
-        jMenu3.setText("Wiadomości");
-        jMenuBar1.add(jMenu3);
+        wiadomosci.setText("Wiadomości");
+        wiadomosci.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                wiadomosciMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(wiadomosci);
 
         jMenu4.setText("Wyloguj");
         jMenuBar1.add(jMenu4);
 
-        jMenu5.setText("Wyjście");
-        jMenuBar1.add(jMenu5);
+        wyjscie.setText("Wyjście");
+        wyjscie.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                wyjscieMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(wyjscie);
 
         setJMenuBar(jMenuBar1);
 
@@ -450,23 +547,40 @@ public class Konto extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void szukajMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_szukajMenuMouseClicked
+        // TODO add your handling code here:
+        new AktualneLoty().setVisible(true);
+        parentFrame.dispose();
+    }//GEN-LAST:event_szukajMenuMouseClicked
+
+    private void wyjscieMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_wyjscieMouseClicked
+        // TODO add your handling code here:
+        parentFrame.dispose();
+    }//GEN-LAST:event_wyjscieMouseClicked
+
+    private void wiadomosciMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_wiadomosciMouseClicked
+        // TODO add your handling code here:
+        new WiadomoscUzytkownik().setVisible(true);
+        parentFrame.dispose();
+    }//GEN-LAST:event_wiadomosciMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JMenu mojeKontoMenu;
     private javax.swing.JPanel panelAnulowania;
     private javax.swing.JPanel panelZakupow;
     private javax.swing.JLabel srodkiLabel;
+    private javax.swing.JMenu szukajMenu;
+    private javax.swing.JMenu wiadomosci;
+    private javax.swing.JMenu wyjscie;
     private javax.swing.JTable zakupyTabela;
     // End of variables declaration//GEN-END:variables
 }

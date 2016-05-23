@@ -186,8 +186,10 @@ public class Logowanie extends javax.swing.JFrame {
                 catch (ParseException ex) 
                 {
                     Logger.getLogger(Logowanie.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    Logger.getLogger(Logowanie.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                //new AktualneLoty().setVisible(true);
+               // new AktualneLoty().setVisible(true);
             }
         });
     }

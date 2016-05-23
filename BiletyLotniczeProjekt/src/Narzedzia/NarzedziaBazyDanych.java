@@ -149,6 +149,7 @@ public class NarzedziaBazyDanych
                 rezerwacjaBean.setRezerwacjaData( rs.getString( 4 ) );
                 rezerwacjaBean.setRezerwacjaRzadMiejsce( rs.getString( 5 ) );
                 rezerwacjaBean.setRezerwacjaKlasa( rs.getString( 6 ) );
+                rezerwacjaBean.setRezerwacjaKwota( rs.getFloat( 7 ) );
                 
                 listaRezerwacjiBean.add( rezerwacjaBean );
             }

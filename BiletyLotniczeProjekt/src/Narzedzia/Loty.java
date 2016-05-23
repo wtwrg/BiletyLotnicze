@@ -30,6 +30,7 @@ public class Loty
     private final String POBRANIE_ZAJETYCH_MIEJSC = "SELECT ZKP_RZAD_MIEJSCE, RZR_RZAD_MIEJSCE FROM ZAKUPY, REZERWACJE WHERE ZKP_LOT_ID=? AND ZKP_LOT_ID=RZR_LOT_ID";
     
     private final String POBIERZ_DATE_LOTU = "SELECT LOT_DATA_ODLOTU FROM LOTY WHERE LOT_ID=?";
+    private final String POBIERZ_DATE_LOTU_I_LOTNISKO = "SELECT LOT_DATA_ODLOTU, LTN_NAZWA FROM LOTY, LOTNISKO WHERE LOT_ID=? AND LTN_ID=LOT_LOTNISKO_ID";
     
     Connection connection = null;
     DBConnector dbConnector = null;
@@ -449,5 +450,33 @@ public class Loty
                 }
             }
         return wszystkieLoty;
+    }
+    
+    public List<String> pobierzDateLotuILotnisko( Integer IDLotu ) throws SQLException
+    {
+        connection = dbConnector.setConnection();
+        List<String> lista = new ArrayList<String>();
+        try
+        {
+            ps = connection.prepareStatement( POBIERZ_DATE_LOTU_I_LOTNISKO );
+            ps.setObject(1, IDLotu);
+            rs = ps.executeQuery();
+            while(rs.next())
+            {
+                lista.add(rs.getString(1));
+                lista.add(rs.getString(2));
+            }  
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            connection.close();
+            ps.close();
+            rs.close();
+        }
+        return lista;
     }
 }

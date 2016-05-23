@@ -4,7 +4,7 @@ package Beany;
 public class PotwierdzenieBean 
 {
     Integer potwierdzenieID;
-    Integer potwierdzenieUzytkownikID;
+    Integer potwierdzenieZakupID;
     String potwierdzeniePDF;
 
     public Integer getPotwierdzenieID() {
@@ -16,11 +16,11 @@ public class PotwierdzenieBean
     }
 
     public Integer getPotwierdzenieUzytkownikID() {
-        return potwierdzenieUzytkownikID;
+        return potwierdzenieZakupID;
     }
 
     public void setPotwierdzenieUzytkownikID(Integer potwierdzenieUzytkownikID) {
-        this.potwierdzenieUzytkownikID = potwierdzenieUzytkownikID;
+        this.potwierdzenieZakupID = potwierdzenieUzytkownikID;
     }
 
     public String getPotwierdzeniePDF() {

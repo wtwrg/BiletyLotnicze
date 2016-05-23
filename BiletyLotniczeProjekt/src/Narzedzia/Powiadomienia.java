@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class Powiadomienia 
 {
-    private final String POWIADOMIENIE_O_NOWEJ_REZERWACJI_LOCIE = "INSERT INTO wiadomosci (WDM_UZT_ID_ODBIOCY, WDM_UZT_ID_NADAWCY, WDM_TEMAT, WDM_TRESC, WDM_DATA, WDM_TYP) VALUES (?,?,?,?,NOW(),?)";
+    private final String POWIADOMIENIE = "INSERT INTO wiadomosci (WDM_UZT_ID_ODBIOCY, WDM_UZT_ID_NADAWCY, WDM_TEMAT, WDM_TRESC, WDM_DATA, WDM_TYP) VALUES (?,?,?,?,NOW(),?)";
     
     Connection connection = null;
     DBConnector dbConnector = null;
@@ -24,7 +24,7 @@ public class Powiadomienia
     public void potwierdzenieRezerwacjiKupna( String wybranaOpcja, String IDUzytkownika ) throws SQLException
     {
         String temat = null;
-        String tresc = WiadomoscBean.TRESC_NOWY_ZAKUP_REZERWACJA;
+        String tresc = WiadomoscBean.TRESC_NOWA_AKCJA_UZYTKOWNIK;
         tresc = tresc.replaceFirst("\\?", IDUzytkownika);
         
         if( wybranaOpcja.contains("rezerwuj") )
@@ -40,12 +40,71 @@ public class Powiadomienia
         try
         {
             connection = dbConnector.setConnection();
-            ps = connection.prepareStatement( POWIADOMIENIE_O_NOWEJ_REZERWACJI_LOCIE );
+            ps = connection.prepareStatement( POWIADOMIENIE );
             ps.setObject(1, WiadomoscBean.WIADOMOSC_ODBIORCA_WSZYSCY_ADMINISTRATORZY);
             ps.setObject(2, WiadomoscBean.WIADOMOSC_NADAWCA_SYSTEM);
             ps.setObject(3, temat);
             ps.setObject(4, tresc);
             ps.setObject(5, WiadomoscBean.WIADOMOSC_TYP_1);
+            
+            ps.executeUpdate();
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            connection.close();
+            ps.close();
+        }
+    }
+    public void anulowanieLotuPrzezUzytkownika( Integer IDLotu, Integer IDUzytkownika ) throws SQLException
+    {
+        String temat = WiadomoscBean.TEMAT_ANULOWANIE;
+        String tresc = WiadomoscBean.TRESC_NOWA_AKCJA_UZYTKOWNIK;
+        tresc = tresc.replaceFirst("\\?", String.valueOf(IDUzytkownika));
+        tresc = tresc.replaceFirst("\\?", WiadomoscBean.TRESC_ANULOWANIE);
+        tresc = tresc.replaceFirst("\\?", String.valueOf(IDLotu));
+        
+        try
+        {
+            connection = dbConnector.setConnection();
+            ps = connection.prepareStatement( POWIADOMIENIE );
+            ps.setObject(1, WiadomoscBean.WIADOMOSC_ODBIORCA_WSZYSCY_ADMINISTRATORZY);
+            ps.setObject(2, WiadomoscBean.WIADOMOSC_NADAWCA_SYSTEM);
+            ps.setObject(3, temat);
+            ps.setObject(4, tresc);
+            ps.setObject(5, WiadomoscBean.WIADOMOSC_TYP_2);
+            
+            ps.executeUpdate();
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            connection.close();
+            ps.close();
+        }
+    }
+    
+    public void wygenerowanieNowegoPotwierdzeniaPDF( Integer IDUzytkownika ) throws SQLException
+    {
+        String temat = WiadomoscBean.TEMAT_PDF;
+        String tresc = WiadomoscBean.TRESC_PDF;
+        tresc = tresc.replaceFirst("\\?", String.valueOf(IDUzytkownika));
+        
+        try
+        {
+            connection = dbConnector.setConnection();
+            ps = connection.prepareStatement( POWIADOMIENIE );
+            ps.setObject(1, WiadomoscBean.WIADOMOSC_ODBIORCA_WSZYSCY_ADMINISTRATORZY);
+            ps.setObject(2, WiadomoscBean.WIADOMOSC_NADAWCA_SYSTEM);
+            ps.setObject(3, temat);
+            ps.setObject(4, tresc);
+            ps.setObject(5, WiadomoscBean.WIADOMOSC_TYP_3);
             
             ps.executeUpdate();
         }

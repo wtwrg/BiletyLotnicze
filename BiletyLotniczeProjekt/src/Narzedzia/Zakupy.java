@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -25,6 +26,7 @@ public class Zakupy
     private final String POBIERZ_LOTNISKO_DLA_ZAKUPU = "SELECT LTN_NAZWA FROM LOTNISKO, LOTY, ZAKUPY WHERE LTN_ID=LOT_LOTNISKO_ID AND LOT_ID=ZKP_LOT_ID AND ZKP_ID=?";
     private final String USUN_REZERWACJE = "DELETE FROM REZERWACJE WHERE RZR_ID=?";
     private final String USUN_ZAKUP = "DELETE FROM ZAKUPY WHERE ZKP_ID=?";
+    private final String USUN_PDF = "DELETE FROM POTWIERDZENIA_PDF WHERE PTW_ZKP_ID=?";
 
     public final static String ZAKUP = "Zakup";
     public final static String REZERWACJA = "Rezerwacja";
@@ -34,11 +36,14 @@ public class Zakupy
     PreparedStatement ps = null;
     ResultSet rs = null;
     NarzedziaBazyDanych narzedziaBazyDanych = null;
+    public static int last_inserted_id = 0;
+    Loty loty;
     
     public Zakupy()
     {
         dbConnector = new DBConnector();
         narzedziaBazyDanych = new NarzedziaBazyDanych();
+        loty = new Loty();
     }
     
     public float pobierzDostepneSrodki( Integer IDUzytkownika ) throws SQLException
@@ -137,13 +142,18 @@ public class Zakupy
             }
             else if( wybranaOpcja.contains("kup") )
             {
-                ps = connection.prepareStatement( KUPNO_LOTU );
+                ps = connection.prepareStatement( KUPNO_LOTU, Statement.RETURN_GENERATED_KEYS );
                 ps.setObject(1, IDUzytkownika);
                 ps.setObject(2, IDLotu);
                 ps.setObject(3, wybraneMiejsce);
                 ps.setObject(4, klasa);
                 ps.setObject(5, cena);
                 isInserted = ps.executeUpdate();
+                rs = ps.getGeneratedKeys();
+                if(rs.next())
+                {
+                    last_inserted_id = rs.getInt(1);
+                }
                 uaktualnijSrodki(IDUzytkownika, Float.valueOf(cena), srodki, false);
             }
         }
@@ -168,15 +178,17 @@ public class Zakupy
         
         for( ZakupBean zakupBean : listaZakupow )
         {
+            String dataLotu = loty.pobierzDateLotu(zakupBean.getZakupLotID());
             Object[] zakup = null;
-            zakup = new Object[]{ ZAKUP, zakupBean.getZakupData(), pobierzLotniskoZakupu(zakupBean.getZakupID()), zakupBean.getZakupKwota(), zakupBean.getZakupLotID() };
+            zakup = new Object[]{ ZAKUP, zakupBean.getZakupData(), dataLotu, pobierzLotniskoZakupu(zakupBean.getZakupID()), zakupBean.getZakupKwota(), zakupBean.getZakupLotID() };
             zakupyIRezerwacje.add(zakup);
         }
         
         for( RezerwacjaBean rezerwacjaBean : listaRezerwacji )
         {
+            String dataLotu = loty.pobierzDateLotu(rezerwacjaBean.getRezerwacjaLotID());
             Object[] zakup = null;
-            zakup = new Object[]{ REZERWACJA, rezerwacjaBean.getRezerwacjaData(), pobierzLotniskoDlaRezerwacji(rezerwacjaBean.getRezerwacjaID()), rezerwacjaBean.getRezerwacjaKwota(), rezerwacjaBean.getRezerwacjaLotID() };
+            zakup = new Object[]{ REZERWACJA, rezerwacjaBean.getRezerwacjaData(), dataLotu,  pobierzLotniskoDlaRezerwacji(rezerwacjaBean.getRezerwacjaID()), rezerwacjaBean.getRezerwacjaKwota(), rezerwacjaBean.getRezerwacjaLotID() };
             zakupyIRezerwacje.add(zakup);
         }
         
@@ -308,14 +320,22 @@ public class Zakupy
             ps.close();
         }
     }
-    public void usunZakup( Integer IDZakupu ) throws SQLException
+    public void usunZakup( Integer IDZakupu, Integer IDUzytkownika, float kwotaDoUaktualnienia ) throws SQLException
     {
         connection = dbConnector.setConnection();
         try
         {
+            ps = connection.prepareStatement( USUN_PDF );
+            ps.setObject(1, IDZakupu);
+            ps.executeUpdate();
+            
             ps = connection.prepareStatement( USUN_ZAKUP );
             ps.setObject(1, IDZakupu);
             ps.executeUpdate();
+            
+             float srodki = pobierzDostepneSrodki(IDUzytkownika);
+             uaktualnijSrodki( IDUzytkownika, kwotaDoUaktualnienia, srodki, true );
+;
         }
         catch( SQLException e )
         {
