@@ -1,5 +1,23 @@
 package Formatki;
 
+import Narzedzia.Uzytkownicy;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+import net.miginfocom.swing.MigLayout;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,11 +30,76 @@ package Formatki;
  */
 public class UzytkownicyAdministrator extends javax.swing.JFrame {
 
+    ButtonGroup zarzadzanie;
+    List<AbstractButton> listCheckBoxes;
+    Uzytkownicy uzytkownicy;
+    List<Object[]> listaWszystkichuzytkownikow;
+    JFrame parentFrame;
     /**
      * Creates new form UzytkownicyAdministrator
      */
-    public UzytkownicyAdministrator() {
+    public UzytkownicyAdministrator() throws SQLException {
         initComponents();
+        uzytkownicy = new Uzytkownicy();
+        zarzadzanie  = new ButtonGroup();
+        listCheckBoxes = new ArrayList<>();
+        wyswietlUzytkownikowAdministrator();
+        parentFrame = (JFrame)SwingUtilities.getRoot(panelZarzadzania);
+    }
+    
+    private void refresh() throws ParseException, Exception
+    {
+        new UzytkownicyAdministrator().setVisible(true);
+        parentFrame.dispose();
+    }
+    
+    private void wyswietlUzytkownikowAdministrator() throws SQLException
+    {
+        JLabel zmiany = new JLabel("Zmień");
+        
+        try
+        {
+        listaWszystkichuzytkownikow = uzytkownicy.pokazUzytkownikowAdmin();
+        DefaultTableModel model = (DefaultTableModel) listaUzytkownikow.getModel();
+            
+        int rekordy = model.getRowCount();
+        for( int i=0; i < rekordy; i++ )
+        {
+            model.removeRow(0);
+        }
+        
+        for( AbstractButton checkBox : listCheckBoxes )
+        {
+            zarzadzanie.remove(checkBox);
+            panelZarzadzania.remove(checkBox);
+        }
+        
+        listCheckBoxes.clear();
+        panelZarzadzania.remove(zmiany);
+        
+         if( listaWszystkichuzytkownikow!= null )
+            {
+                panelZarzadzania.setLayout(new MigLayout("","","[]12[]"));
+                panelZarzadzania.add(zmiany, "wrap");
+                
+                for( int i=0; i<listaWszystkichuzytkownikow.size(); i++ )
+                { 
+                    Object[] uzytkownik = listaWszystkichuzytkownikow.get(i);
+                    model.addRow(uzytkownik);
+                    JCheckBox zmiana = new JCheckBox();
+                    zmiana.setName("zmiana"+i);
+                    listCheckBoxes.add(zmiana);
+                    panelZarzadzania.add(zmiana, "wrap");
+                    zarzadzanie.add(zmiana);
+                }
+                panelZarzadzania.revalidate();
+                panelZarzadzania.repaint();
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(AktualneLoty.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -30,10 +113,11 @@ public class UzytkownicyAdministrator extends javax.swing.JFrame {
 
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         jRadioButtonMenuItem1 = new javax.swing.JRadioButtonMenuItem();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        buttonBlokuj = new javax.swing.JButton();
+        buttonZmianaHasla = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        listaUzytkownikow = new javax.swing.JTable();
+        panelZarzadzania = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -51,47 +135,53 @@ public class UzytkownicyAdministrator extends javax.swing.JFrame {
         setResizable(false);
         setSize(new java.awt.Dimension(900, 600));
 
-        jButton3.setText("Blokuj użytkownika");
+        buttonBlokuj.setText("Blokuj / Odblokuj");
+        buttonBlokuj.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonBlokujActionPerformed(evt);
+            }
+        });
 
-        jButton4.setText("Wymuś zmianę hasła");
+        buttonZmianaHasla.setText("Wymuś zmianę hasła");
+        buttonZmianaHasla.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonZmianaHaslaActionPerformed(evt);
+            }
+        });
 
         jScrollPane1.setEnabled(false);
         jScrollPane1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
-        jTable1.setFont(new java.awt.Font("Calibri", 2, 12)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        listaUzytkownikow.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Imie i nazwisko", "Czy zablokowany", "Czy zmian hasła", "Modyfikacja"
+                "Id", "Imie", "Nazwisko", "Czy zablokowany", "Czy zmian hasła"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, true, true
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jTable1.setMinimumSize(new java.awt.Dimension(60, 320));
-        jTable1.setRowHeight(30);
-        jScrollPane1.setViewportView(jTable1);
+        listaUzytkownikow.setMinimumSize(new java.awt.Dimension(60, 320));
+        listaUzytkownikow.setRowHeight(30);
+        jScrollPane1.setViewportView(listaUzytkownikow);
+
+        javax.swing.GroupLayout panelZarzadzaniaLayout = new javax.swing.GroupLayout(panelZarzadzania);
+        panelZarzadzania.setLayout(panelZarzadzaniaLayout);
+        panelZarzadzaniaLayout.setHorizontalGroup(
+            panelZarzadzaniaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 60, Short.MAX_VALUE)
+        );
+        panelZarzadzaniaLayout.setVerticalGroup(
+            panelZarzadzaniaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
 
         jMenu1.setText("Szukaj");
         jMenuBar1.add(jMenu1);
@@ -115,36 +205,161 @@ public class UzytkownicyAdministrator extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(34, 34, 34)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(129, 129, 129)
+                .addGap(25, 25, 25)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 486, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panelZarzadzania, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(53, 53, 53)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 133, Short.MAX_VALUE))
+                    .addComponent(buttonBlokuj)
+                    .addComponent(buttonZmianaHasla))
+                .addGap(115, 115, 115))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(57, 57, 57)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(56, 56, 56)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 330, Short.MAX_VALUE)))
-                .addContainerGap(40, Short.MAX_VALUE))
+                        .addGap(136, 136, 136)
+                        .addComponent(buttonBlokuj)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(buttonZmianaHasla))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(46, 46, 46)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
+                            .addComponent(panelZarzadzania, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void buttonBlokujActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonBlokujActionPerformed
+        int isInserted = 0;
+        String wybranaOpcja = null;
+        Enumeration enumsd = zarzadzanie.getElements();
+        while( enumsd.hasMoreElements() )
+        {
+            JCheckBox jb = (JCheckBox)enumsd.nextElement();
+            if(jb.isSelected())
+            {
+                wybranaOpcja = jb.getName();
+                break;
+            }
+        }
+        if( wybranaOpcja == null )
+        {
+            JOptionPane.showMessageDialog(this, "Proszę wybrać użytkownika.");
+        }
+        else
+        {
+            String wiersz = String.valueOf(wybranaOpcja.charAt(wybranaOpcja.length()-1));
+            
+            Object[] wybranyUzytkownik = listaWszystkichuzytkownikow.get(Integer.parseInt(wiersz));
+
+            if(wybranyUzytkownik[3].equals(true))
+            {
+                try 
+                {
+                    isInserted = uzytkownicy.uaktualnijCzyBlokada((int) wybranyUzytkownik[0], false);
+                    if( isInserted == 1 )
+                    {
+                        JOptionPane.showMessageDialog(this, "Użytkownik " + wybranyUzytkownik[1] + " " + wybranyUzytkownik[2]+ " został odblokowany.");
+                        refresh();
+                    }
+                    else if( isInserted == 2 )
+                    {
+                        JOptionPane.showMessageDialog(panelZarzadzania, "Błąd przy próbie odblokowania użytkownika.");
+                    }
+                } 
+                catch (SQLException ex) 
+                {
+                    Logger.getLogger(UzytkownicyAdministrator.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    Logger.getLogger(UzytkownicyAdministrator.class.getName()).log(Level.SEVERE, null, ex);
+                }   
+            }
+            else
+            {
+                try 
+                {
+                    isInserted = uzytkownicy.uaktualnijCzyBlokada((int) wybranyUzytkownik[0], true);
+                    if( isInserted == 1 )
+                    {
+                         JOptionPane.showMessageDialog(this, "Użytkownik " + wybranyUzytkownik[1] + " " + wybranyUzytkownik[2]+ " został zablokowany.");
+                         refresh();
+                    }
+                    else if( isInserted == 2 )
+                    {
+                        JOptionPane.showMessageDialog(panelZarzadzania, "Błąd przy próbie blokowania użytkownika.");
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(UzytkownicyAdministrator.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    Logger.getLogger(UzytkownicyAdministrator.class.getName()).log(Level.SEVERE, null, ex);
+                }   
+            }
+        }
+    }//GEN-LAST:event_buttonBlokujActionPerformed
+
+    private void buttonZmianaHaslaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonZmianaHaslaActionPerformed
+        String wybranaOpcja = null;
+        int isInserted = 0;
+        Enumeration enumsd = zarzadzanie.getElements();
+        while( enumsd.hasMoreElements() )
+        {
+            JCheckBox jb = (JCheckBox)enumsd.nextElement();
+            if(jb.isSelected())
+            {
+                wybranaOpcja = jb.getName();
+                break;
+            }
+        }
+        if( wybranaOpcja == null )
+        {
+            JOptionPane.showMessageDialog(this, "Proszę wybrać użytkownika.");
+        }
+        else
+        {
+            String wiersz = String.valueOf(wybranaOpcja.charAt(wybranaOpcja.length()-1));
+            
+            Object[] wybranyUzytkownik = listaWszystkichuzytkownikow.get(Integer.parseInt(wiersz));
+
+            if(wybranyUzytkownik[4].equals(true))
+            {
+              JOptionPane.showMessageDialog(this, "Użytkownik " + wybranyUzytkownik[1] + " " + wybranyUzytkownik[2]+ " ma już wymuszoną zmianę hasła.");  
+              zarzadzanie.clearSelection();
+            }
+            else
+            {
+                try 
+                {
+                    isInserted = uzytkownicy.uaktualnijCzyZmianaHasla((int) wybranyUzytkownik[0], true);
+                    if( isInserted == 1 )
+                    {
+                        JOptionPane.showMessageDialog(this, "Na użytkowniku " + wybranyUzytkownik[1] + " " + wybranyUzytkownik[2]+ " zostanie wymuszone zmienienie hasła.");
+                        refresh();
+                    }
+                    else if( isInserted == 2 )
+                    {
+                        JOptionPane.showMessageDialog(panelZarzadzania, "Błąd przy zmieanie prawa uzytkownika.");
+                    }
+                } catch (SQLException ex) 
+                {
+                    Logger.getLogger(UzytkownicyAdministrator.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) 
+                {
+                    Logger.getLogger(UzytkownicyAdministrator.class.getName()).log(Level.SEVERE, null, ex);
+                } 
+             }
+        }
+    }//GEN-LAST:event_buttonZmianaHaslaActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton buttonBlokuj;
+    private javax.swing.JButton buttonZmianaHasla;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -154,6 +369,9 @@ public class UzytkownicyAdministrator extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable listaUzytkownikow;
+    private javax.swing.JPanel panelZarzadzania;
     // End of variables declaration//GEN-END:variables
 }
+
+

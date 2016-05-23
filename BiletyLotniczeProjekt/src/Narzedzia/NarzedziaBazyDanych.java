@@ -5,6 +5,7 @@ import Beany.SamolotBean;
 import Beany.LotniskoBean;
 import Beany.LotBean;
 import Beany.RezerwacjaBean;
+import Beany.UzytkownikBean;
 import Beany.ZakupBean;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -159,5 +160,36 @@ public class NarzedziaBazyDanych
             e.printStackTrace();
         }
         return listaRezerwacjiBean;
+    }
+    
+    public List<UzytkownikBean> ustawUzytkownikow( ResultSet rs )
+    {
+        List<UzytkownikBean> listaUzytkownikowBean = new ArrayList<UzytkownikBean>();
+        try
+        {
+            while( rs.next() )
+            {
+                UzytkownikBean uzytkownikBean = new UzytkownikBean();
+                
+                uzytkownikBean.setUzytkownikID(rs.getInt( 1 ));
+                uzytkownikBean.setUzytkownikImie(rs.getString( 2 ));
+                uzytkownikBean.setUzytkownikNazwisko(rs.getString( 3 ));
+                uzytkownikBean.setUzytkownikPlec(rs.getString(4));
+                uzytkownikBean.setUzytkownikPESEL(rs.getString(5));
+                uzytkownikBean.setUzytkownikCzyAdministrator(rs.getBoolean(6));
+                uzytkownikBean.setUzytkownikCzyZablokowany(rs.getBoolean(7));
+                uzytkownikBean.setUzytkownikHaslo(rs.getString(8));
+                uzytkownikBean.setUzytkownikCzyZmianaHasla(rs.getBoolean(9));
+                uzytkownikBean.setUzytkownikSaldo(rs.getFloat(10));
+                uzytkownikBean.setUzytkownikData(rs.getDate(11));
+                
+                listaUzytkownikowBean.add( uzytkownikBean );
+            }
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        return listaUzytkownikowBean;
     }
 }

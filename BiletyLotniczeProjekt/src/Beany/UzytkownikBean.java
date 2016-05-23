@@ -10,12 +10,13 @@ public class UzytkownikBean
     String uzytkownikImie;
     String uzytkownikNazwisko;
     String uzytkownikPlec;
-    Integer uzytkownikPESEL;
+    String uzytkownikPESEL;
     boolean uzytkownikCzyAdministrator;
     boolean uzytkownikCzyZablokowany;
     boolean uzytkownikCzyZmianaHasla;
     float uzytkownikSaldo;
     Date uzytkownikData;
+    String uzytkownikHaslo;
 
     public Integer getUzytkownikID() {
         return uzytkownikID;
@@ -49,11 +50,11 @@ public class UzytkownikBean
         this.uzytkownikPlec = uzytkownikPlec;
     }
 
-    public Integer getUzytkownikPESEL() {
+    public String getUzytkownikPESEL() {
         return uzytkownikPESEL;
     }
 
-    public void setUzytkownikPESEL(Integer uzytkownikPESEL) {
+    public void setUzytkownikPESEL(String uzytkownikPESEL) {
         this.uzytkownikPESEL = uzytkownikPESEL;
     }
 
@@ -95,5 +96,13 @@ public class UzytkownikBean
 
     public void setUzytkownikData(Date uzytkownikData) {
         this.uzytkownikData = uzytkownikData;
+    }
+    
+    public String getUzytkownikHaslo() {
+        return uzytkownikHaslo;
+    }
+
+    public void setUzytkownikHaslo(String uzytkownikHaslo) {
+        this.uzytkownikHaslo = uzytkownikHaslo;
     }
 }
