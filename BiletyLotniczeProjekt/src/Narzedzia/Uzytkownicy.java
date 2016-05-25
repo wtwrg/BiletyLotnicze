@@ -5,7 +5,10 @@
  */
 package Narzedzia;
 
+import Beany.AdresBean;
+import Beany.KontaktBean;
 import Beany.UzytkownikBean;
+import Beany.DokumentBean;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,8 +26,14 @@ public class Uzytkownicy {
     
     public static final String UAKTUALNIJ_CZY_BLOKADA = "UPDATE uzytkownicy SET UZT_CZY_BLOKADA=? WHERE UZT_ID=?";
     public static final String UAKTUALNIJ_CZY_ZMINA_HASLA = "UPDATE uzytkownicy SET UZT_CZY_ZMIANA_HASLA=? WHERE UZT_ID=?";
-    private final static String POBRANIE_UZYTKOWNIKOW = "SELECT UZT_ID, UZT_IMIE, UZT_NAZWISKO, UZT_PLEC, UZT_PESEL," +
-            "UZT_CZY_ADM, UZT_CZY_BLOKADA, UZT_HASLO, UZT_CZY_ZMIANA_HASLA, UZT_SALDO, UZT_DATA FROM UZYTKOWNICY ";
+    private final static String POBRANIE_UZYTKOWNIKOW = "SELECT UZT_ID, UZT_LOGIN, UZT_IMIE, UZT_NAZWISKO, UZT_ADRES_EMAIL, UZT_PLEC, UZT_PESEL," +
+            "UZT_CZY_ADM, UZT_CZY_BLOKADA, UZT_HASLO, UZT_CZY_ZMIANA_HASLA, UZT_SALDO, UZT_DATA FROM uzytkownicy";
+    private final static String POBRANIE_UZYTKOWNIA_DO_LOGOWANIA = "SELECT UZT_HASLO WHERE UZT_LOGIN = ?";
+    private final static String MAKSYMALNE_ID_UZYTKOWNIKA = "SELECT max(`UZT_ID`) FROM `uzytkownicy`";
+    private final static String DODAJ_UZYTKOWNIKA = "INSERT INTO `uzytkownicy` (`UZT_LOGIN`, `UZT_IMIE`, `UZT_NAZWISKO`,`UZT_ADRES_EMAIL`, `UZT_PLEC`, `UZT_PESEL`, `UZT_CZY_ADM`, `UZT_CZY_BLOKADA`, `UZT_HASLO`, `UZT_CZY_ZMIANA_HASLA`, `UZT_SALDO`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private final static String DODAJ_ADRES = "INSERT INTO `adresy` (`ADR_UZT_ID`, `ADR_ULICA`, `ADR_NR_DOMU`,`ADR_NR_MIESZKANIA`, `ADR_MIASTO`, `ADR_KRAJ`) VALUES (?, ?, ?, ?, ?, ?)";
+    private final static String DODAJ_KONTAKT = "INSERT INTO `kontakty` (`KNT_UZT_ID`, `KNT_EMAIL`, `KNT_TELEFON`) VALUES (?, ?, ?)";
+    private final static String DODAJ_DOKUMENT = "INSERT INTO `dokumenty` (`DKM_UZT_ID`, `DKM_TYP`, `DKM_NUMER`) VALUES (?, ?, ?)";
     
     Connection connection = null;
     DBConnector dbConnector = null;
@@ -122,5 +131,92 @@ public class Uzytkownicy {
             uzytkownicy.add(uzytkownik);
         }
         return  uzytkownicy;
+    }
+    
+    public boolean logowanie (String login, String haslo) throws SQLException
+    {
+        boolean zalogowany = false;
+        List<UzytkownikBean> listaUzytkownikowBean = pobierzUzytkownikow();
+
+        for( UzytkownikBean user : listaUzytkownikowBean )
+        {
+            if(((user.getUzytkownikLogin().equals(login) ) || user.getUzytkownikAdresEmail().equals(login)) && (user.getUzytkownikHaslo().equals(haslo) ) ) {
+                zalogowany = true;
+            }
+        }
+        return zalogowany;
+    }
+    public int rejestracja (UzytkownikBean uzytkownikBean, AdresBean adresBean, KontaktBean kontaktBean, DokumentBean dokumentBean) throws SQLException 
+    {
+        connection = dbConnector.setConnection();
+        int isInserted = 0;
+        try
+        {
+            ps = connection.prepareStatement( DODAJ_UZYTKOWNIKA );
+            ps.setObject(1, uzytkownikBean.getUzytkownikLogin());
+            ps.setObject(2, uzytkownikBean.getUzytkownikImie());
+            ps.setObject(3, uzytkownikBean.getUzytkownikNazwisko());
+            ps.setObject(4, uzytkownikBean.getUzytkownikAdresEmail());
+            ps.setObject(5, uzytkownikBean.getUzytkownikPlec());
+            ps.setObject(6, uzytkownikBean.getUzytkownikPESEL());
+            ps.setObject(7, uzytkownikBean.isUzytkownikCzyAdministrator());
+            ps.setObject(8, uzytkownikBean.isUzytkownikCzyZablokowany());
+            ps.setObject(9, uzytkownikBean.getUzytkownikHaslo());
+            ps.setObject(10, uzytkownikBean.isUzytkownikCzyZmianaHasla());
+            ps.setObject(11, uzytkownikBean.getUzytkownikSaldo());
+            isInserted = ps.executeUpdate();
+            if(isInserted > 0) {
+                ps = connection.prepareStatement( MAKSYMALNE_ID_UZYTKOWNIKA );
+                rs = ps.executeQuery();
+                if(rs.next()) {
+                    int idUzytkownika = rs.getInt(1);
+                    ps = connection.prepareStatement( DODAJ_ADRES);
+                    ps.setObject(1, idUzytkownika);
+                    ps.setObject(2, adresBean.getAdresUlica());
+                    ps.setObject(3, adresBean.getAdresNrDomu());
+                    ps.setObject(4, adresBean.getAdresNrMieszkania());
+                    ps.setObject(5, adresBean.getAdresMiasto());
+                    ps.setObject(6, adresBean.getAdresKraj());
+                    isInserted = ps.executeUpdate();
+                    
+                    ps = connection.prepareStatement( DODAJ_KONTAKT);
+                    ps.setObject(1, idUzytkownika);
+                    ps.setObject(2, kontaktBean.getKontaktEmail());
+                    ps.setObject(3, kontaktBean.getKontaktTelefon());
+                    isInserted = ps.executeUpdate();
+                    
+                    ps = connection.prepareStatement( DODAJ_DOKUMENT);
+                    ps.setObject(1, idUzytkownika);
+                    ps.setObject(2, dokumentBean.getDokumentTyp());
+                    ps.setObject(3, dokumentBean.getDokumentNumer());
+                    isInserted = ps.executeUpdate();
+                }
+                
+            }
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            connection.close();
+            ps.close();
+            rs.close();
+        }
+        return isInserted;
+    }
+    public boolean czyIstniejeUzytkownik (String login, String adresEmail) throws SQLException
+    {
+        boolean istnieje = false;
+        List<UzytkownikBean> listaUzytkownikowBean = pobierzUzytkownikow();
+
+        for( UzytkownikBean user : listaUzytkownikowBean )
+        {
+            if((user.getUzytkownikLogin().equals(login) ) && (user.getUzytkownikAdresEmail().equals(adresEmail) ) ) {
+                istnieje = true;
+            }
+        }
+        return istnieje;
     }
 }

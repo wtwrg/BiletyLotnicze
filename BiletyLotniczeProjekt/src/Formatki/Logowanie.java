@@ -1,9 +1,15 @@
 package Formatki;
 
+import Beany.UzytkownikBean;
+import Narzedzia.Uzytkownicy;
+import java.awt.Color;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -17,11 +23,17 @@ import java.util.logging.Logger;
  */
 public class Logowanie extends javax.swing.JFrame {
 
+    private static Logowanie logowanie;
+    JFrame parentFrame;
+    List<UzytkownikBean> listaUzytkownicy;
+    Uzytkownicy uzytkownicy;
     /**
      * Creates new form Logowanie
      */
     public Logowanie() {
         initComponents();
+        uzytkownicy = new Uzytkownicy();
+
     }
 
     /**
@@ -35,18 +47,16 @@ public class Logowanie extends javax.swing.JFrame {
 
         Uzytkownik = new javax.swing.JLabel();
         Haslo = new javax.swing.JLabel();
-        jTextField1Uzytkownik = new javax.swing.JTextField();
+        loginTF = new javax.swing.JTextField();
         Program = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        zalogujB = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jPasswordField1 = new javax.swing.JPasswordField();
+        rejestracjaB = new javax.swing.JButton();
+        wyjścieB = new javax.swing.JButton();
+        hasloPF = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
-        setSize(new java.awt.Dimension(600, 400));
 
         Uzytkownik.setFont(new java.awt.Font("Calibri", 2, 18)); // NOI18N
         Uzytkownik.setText("Użytkownik:");
@@ -57,27 +67,39 @@ public class Logowanie extends javax.swing.JFrame {
         Program.setFont(new java.awt.Font("Calibri", 2, 18)); // NOI18N
         Program.setText("Leć z wiatrem! - system do rezerwacji biletów lotniczych");
 
-        jButton1.setFont(new java.awt.Font("Calibri", 0, 11)); // NOI18N
-        jButton1.setText("Zaloguj");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        zalogujB.setFont(new java.awt.Font("Calibri", 0, 11)); // NOI18N
+        zalogujB.setText("Zaloguj");
+        zalogujB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                zalogujBActionPerformed(evt);
             }
         });
-
-        jCheckBox1.setFont(new java.awt.Font("Calibri", 0, 11)); // NOI18N
-        jCheckBox1.setText("Nie wylogowuj mnie");
 
         jLabel1.setFont(new java.awt.Font("Calibri", 2, 14)); // NOI18N
         jLabel1.setText("Nie masz konta? Zarejestruj się już dziś i lataj z nami gdzie tylko chcesz! ");
 
-        jButton2.setFont(new java.awt.Font("Calibri", 0, 11)); // NOI18N
-        jButton2.setText("Rejestracja");
+        rejestracjaB.setFont(new java.awt.Font("Calibri", 0, 11)); // NOI18N
+        rejestracjaB.setText("Rejestracja");
+        rejestracjaB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rejestracjaBActionPerformed(evt);
+            }
+        });
 
-        jButton3.setFont(new java.awt.Font("Calibri", 0, 11)); // NOI18N
-        jButton3.setText("Wyjście");
+        wyjścieB.setFont(new java.awt.Font("Calibri", 0, 11)); // NOI18N
+        wyjścieB.setText("Wyjście");
+        wyjścieB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                wyjścieBActionPerformed(evt);
+            }
+        });
 
-        jPasswordField1.setText("jPasswordField1");
+        hasloPF.setText("jPasswordField1");
+        hasloPF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hasloPFActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -98,18 +120,17 @@ public class Logowanie extends javax.swing.JFrame {
                                 .addGap(42, 42, 42)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jCheckBox1))
-                                    .addComponent(jTextField1Uzytkownik)
-                                    .addComponent(jPasswordField1, javax.swing.GroupLayout.Alignment.TRAILING)))
+                                        .addComponent(zalogujB, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
+                                        .addGap(137, 137, 137))
+                                    .addComponent(loginTF)
+                                    .addComponent(hasloPF, javax.swing.GroupLayout.Alignment.TRAILING)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(406, 406, 406)
-                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(wyjścieB, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(rejestracjaB, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -120,30 +141,62 @@ public class Logowanie extends javax.swing.JFrame {
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Uzytkownik)
-                    .addComponent(jTextField1Uzytkownik, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(loginTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Haslo)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(hasloPF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
-                    .addComponent(jCheckBox1))
+                .addComponent(zalogujB, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(rejestracjaB, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(17, 17, 17)
-                .addComponent(jButton3)
+                .addComponent(wyjścieB)
                 .addGap(35, 35, 35))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void zalogujBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zalogujBActionPerformed
+        try {
+            // TODO add your handling code here:
+            if(uzytkownicy.logowanie(loginTF.getText(), new String(hasloPF.getPassword())))
+            {
+                try {
+                    new Konto().setVisible(true);
+                } catch (Exception ex) {
+                    Logger.getLogger(Logowanie.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                logowanie.dispose();
+            }
+            loginTF.setCaretColor(Color.RED);
+            loginTF.setDisabledTextColor(Color.RED);
+            loginTF.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.red));
+            hasloPF.setCaretColor(Color.RED);
+            hasloPF.setDisabledTextColor(Color.RED);
+            hasloPF.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.red));
+        } catch (SQLException ex) {
+            Logger.getLogger(Logowanie.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_zalogujBActionPerformed
+
+    private void rejestracjaBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rejestracjaBActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        new Rejestracja().setVisible(true);
+        logowanie.dispose();
+    }//GEN-LAST:event_rejestracjaBActionPerformed
+
+    private void wyjścieBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wyjścieBActionPerformed
+        // TODO add your handling code here:
+        logowanie.dispose();
+    }//GEN-LAST:event_wyjścieBActionPerformed
+
+    private void hasloPFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hasloPFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_hasloPFActionPerformed
 
     /**
      * @param args the command line arguments
@@ -177,16 +230,9 @@ public class Logowanie extends javax.swing.JFrame {
             public void run() {
                 try 
                 {
-                    new Konto().setVisible(true);
-                } 
-                catch (SQLException ex) 
-                {
-                    Logger.getLogger(Logowanie.class.getName()).log(Level.SEVERE, null, ex);
-                } 
-                catch (ParseException ex) 
-                {
-                    Logger.getLogger(Logowanie.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (Exception ex) {
+                    logowanie = new Logowanie();
+                    logowanie.setVisible(true);
+                }  catch (Exception ex) {
                     Logger.getLogger(Logowanie.class.getName()).log(Level.SEVERE, null, ex);
                 }
                // new AktualneLoty().setVisible(true);
@@ -198,12 +244,11 @@ public class Logowanie extends javax.swing.JFrame {
     private javax.swing.JLabel Haslo;
     private javax.swing.JLabel Program;
     private javax.swing.JLabel Uzytkownik;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JPasswordField hasloPF;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1Uzytkownik;
+    private javax.swing.JTextField loginTF;
+    private javax.swing.JButton rejestracjaB;
+    private javax.swing.JButton wyjścieB;
+    private javax.swing.JButton zalogujB;
     // End of variables declaration//GEN-END:variables
 }

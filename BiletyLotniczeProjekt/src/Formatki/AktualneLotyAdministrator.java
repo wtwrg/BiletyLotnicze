@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -28,6 +30,7 @@ public class AktualneLotyAdministrator extends javax.swing.JFrame {
     List<Object[]> listaLotow;
     ButtonGroup modyfikacje;
     List<AbstractButton> listCheckBoxes;
+    JFrame parentFrame;
     /**
      * Creates new form AktualneLotyAdministrator
      */
@@ -37,6 +40,7 @@ public class AktualneLotyAdministrator extends javax.swing.JFrame {
         modyfikacje = new ButtonGroup();
         listCheckBoxes = new ArrayList<AbstractButton>();
         pokazAktualneLoty();
+        parentFrame = (JFrame)SwingUtilities.getRoot(panelModyfikacji);
     }
 
     /**
@@ -64,7 +68,6 @@ public class AktualneLotyAdministrator extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
-        setSize(new java.awt.Dimension(900, 600));
 
         jButton3.setText("Dodaj");
 
@@ -119,6 +122,16 @@ public class AktualneLotyAdministrator extends javax.swing.JFrame {
         jMenuBar1.add(jMenu3);
 
         jMenu4.setText("Wyloguj");
+        jMenu4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu4MouseClicked(evt);
+            }
+        });
+        jMenu4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenu4ActionPerformed(evt);
+            }
+        });
         jMenuBar1.add(jMenu4);
 
         jMenu5.setText("Wyjście");
@@ -168,6 +181,15 @@ public class AktualneLotyAdministrator extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jMenu4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu4ActionPerformed
+        
+    }//GEN-LAST:event_jMenu4ActionPerformed
+
+    private void jMenu4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu4MouseClicked
+        new Logowanie().setVisible(true);
+        parentFrame.dispose();
+    }//GEN-LAST:event_jMenu4MouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

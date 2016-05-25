@@ -7,16 +7,18 @@ import java.sql.Date;
 public class UzytkownikBean 
 {
     Integer uzytkownikID;
+    String uzytkownikLogin;
     String uzytkownikImie;
     String uzytkownikNazwisko;
+    String uzytkownikAdresEmail;
     String uzytkownikPlec;
     String uzytkownikPESEL;
     boolean uzytkownikCzyAdministrator;
     boolean uzytkownikCzyZablokowany;
+    String uzytkownikHaslo;
     boolean uzytkownikCzyZmianaHasla;
     float uzytkownikSaldo;
     Date uzytkownikData;
-    String uzytkownikHaslo;
 
     public Integer getUzytkownikID() {
         return uzytkownikID;
@@ -26,6 +28,14 @@ public class UzytkownikBean
         this.uzytkownikID = uzytkownikID;
     }
 
+    public String getUzytkownikLogin() {
+        return uzytkownikLogin;
+    }
+
+    public void setUzytkownikLogin(String uzytkownikLogin) {
+        this.uzytkownikLogin = uzytkownikLogin;
+    }
+    
     public String getUzytkownikImie() {
         return uzytkownikImie;
     }
@@ -42,6 +52,14 @@ public class UzytkownikBean
         this.uzytkownikNazwisko = uzytkownikNazwisko;
     }
 
+    public String getUzytkownikAdresEmail() {
+        return uzytkownikAdresEmail;
+    }
+
+    public void setUzytkownikAdresEmail(String uzytkownikAdresEmail) {
+        this.uzytkownikAdresEmail = uzytkownikAdresEmail;
+    }
+    
     public String getUzytkownikPlec() {
         return uzytkownikPlec;
     }

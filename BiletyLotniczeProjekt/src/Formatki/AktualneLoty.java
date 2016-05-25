@@ -92,7 +92,7 @@ public class AktualneLoty extends javax.swing.JFrame {
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         jRadioButtonMenuItem1 = new javax.swing.JRadioButtonMenuItem();
         jLabel2 = new javax.swing.JLabel();
-        klasaComboBox = new javax.swing.JComboBox<>();
+        klasaComboBox = new javax.swing.JComboBox<String>();
         jCheckBox2 = new javax.swing.JCheckBox();
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
@@ -118,11 +118,10 @@ public class AktualneLoty extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("Wykonaj"); // NOI18N
         setResizable(false);
-        setSize(new java.awt.Dimension(900, 600));
 
         jLabel2.setText("Wyszukaj lot i zarezerwuj miejsce!");
 
-        klasaComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Wszystkie", "Ekonomiczna", "Ekonomiczna Premium", "Biznes", "Pierwsza" }));
+        klasaComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Wszystkie", "Ekonomiczna", "Ekonomiczna Premium", "Biznes", "Pierwsza" }));
 
         jCheckBox2.setText("Przylot");
 
@@ -204,6 +203,16 @@ public class AktualneLoty extends javax.swing.JFrame {
         jMenuBar1.add(wiaodmosci);
 
         jMenu4.setText("Wyloguj");
+        jMenu4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu4MouseClicked(evt);
+            }
+        });
+        jMenu4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenu4ActionPerformed(evt);
+            }
+        });
         jMenuBar1.add(jMenu4);
 
         wyjscie.setText("Wyjście");
@@ -513,6 +522,15 @@ public class AktualneLoty extends javax.swing.JFrame {
         new WiadomoscUzytkownik().setVisible(true);
         parentFrame.dispose();
     }//GEN-LAST:event_wiaodmosciMouseClicked
+
+    private void jMenu4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu4ActionPerformed
+        
+    }//GEN-LAST:event_jMenu4ActionPerformed
+
+    private void jMenu4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu4MouseClicked
+        new Logowanie().setVisible(true);
+        parentFrame.dispose();
+    }//GEN-LAST:event_jMenu4MouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

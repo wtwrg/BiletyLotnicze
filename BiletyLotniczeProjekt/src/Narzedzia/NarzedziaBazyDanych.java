@@ -172,16 +172,18 @@ public class NarzedziaBazyDanych
                 UzytkownikBean uzytkownikBean = new UzytkownikBean();
                 
                 uzytkownikBean.setUzytkownikID(rs.getInt( 1 ));
-                uzytkownikBean.setUzytkownikImie(rs.getString( 2 ));
-                uzytkownikBean.setUzytkownikNazwisko(rs.getString( 3 ));
-                uzytkownikBean.setUzytkownikPlec(rs.getString(4));
-                uzytkownikBean.setUzytkownikPESEL(rs.getString(5));
-                uzytkownikBean.setUzytkownikCzyAdministrator(rs.getBoolean(6));
-                uzytkownikBean.setUzytkownikCzyZablokowany(rs.getBoolean(7));
-                uzytkownikBean.setUzytkownikHaslo(rs.getString(8));
-                uzytkownikBean.setUzytkownikCzyZmianaHasla(rs.getBoolean(9));
-                uzytkownikBean.setUzytkownikSaldo(rs.getFloat(10));
-                uzytkownikBean.setUzytkownikData(rs.getDate(11));
+                uzytkownikBean.setUzytkownikLogin(rs.getString( 2 ));
+                uzytkownikBean.setUzytkownikImie(rs.getString( 3 ));
+                uzytkownikBean.setUzytkownikNazwisko(rs.getString( 4 ));
+                uzytkownikBean.setUzytkownikAdresEmail(rs.getString( 5 ));
+                uzytkownikBean.setUzytkownikPlec(rs.getString(6));
+                uzytkownikBean.setUzytkownikPESEL(rs.getString(7));
+                uzytkownikBean.setUzytkownikCzyAdministrator(rs.getBoolean(8));
+                uzytkownikBean.setUzytkownikCzyZablokowany(rs.getBoolean(9));
+                uzytkownikBean.setUzytkownikHaslo(rs.getString(10));
+                uzytkownikBean.setUzytkownikCzyZmianaHasla(rs.getBoolean(11));
+                uzytkownikBean.setUzytkownikSaldo(rs.getFloat(12));
+                uzytkownikBean.setUzytkownikData(rs.getDate(13));
                 
                 listaUzytkownikowBean.add( uzytkownikBean );
             }
