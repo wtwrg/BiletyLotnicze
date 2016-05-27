@@ -1,11 +1,13 @@
 package Formatki;
 
 import Beany.RezerwacjaBean;
+import Beany.UzytkownikBean;
 import Beany.ZakupBean;
 import Narzedzia.Loty;
 import Narzedzia.PDF;
 import Narzedzia.Powiadomienia;
 import Narzedzia.Zakupy;
+import Wzorce.SingletonUzytkownik;
 import com.itextpdf.text.DocumentException;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
@@ -51,6 +53,7 @@ public class Konto extends javax.swing.JFrame {
     PDF pdf;
     Powiadomienia powiadomienia;
     JFrame parentFrame;
+    UzytkownikBean uzytkownikBean;
     
     public Konto() throws SQLException, ParseException, Exception 
     {
@@ -76,6 +79,7 @@ public class Konto extends javax.swing.JFrame {
         listaZakupy = zakupy.pobierzZakupy( 1 );
         powiadomienia = new Powiadomienia();
         parentFrame = (JFrame)SwingUtilities.getRoot(jPanel1);
+        uzytkownikBean = SingletonUzytkownik.pobierzInstancje().pobierzUzytkownik();
     }
     
     private void ustawZakupy( List<Object[]> listaZakupow ) throws ParseException
@@ -566,7 +570,19 @@ public class Konto extends javax.swing.JFrame {
 
     private void wiadomosciMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_wiadomosciMouseClicked
         // TODO add your handling code here:
-        new WiadomoscUzytkownik().setVisible(true);
+        if (uzytkownikBean.isUzytkownikCzyAdministrator()) {
+            try {
+                new WiadomosciAdministrator().setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            try {
+                new WiadomosciUzytkownik().setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(Konto.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         parentFrame.dispose();
     }//GEN-LAST:event_wiadomosciMouseClicked
 

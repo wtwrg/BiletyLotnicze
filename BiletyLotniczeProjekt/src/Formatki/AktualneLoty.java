@@ -518,8 +518,12 @@ public class AktualneLoty extends javax.swing.JFrame {
     }//GEN-LAST:event_wyjscieMouseClicked
 
     private void wiaodmosciMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_wiaodmosciMouseClicked
-        // TODO add your handling code here:
-        new WiadomoscUzytkownik().setVisible(true);
+        try {
+            // TODO add your handling code here:
+            new WiadomosciUzytkownik().setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(AktualneLoty.class.getName()).log(Level.SEVERE, null, ex);
+        }
         parentFrame.dispose();
     }//GEN-LAST:event_wiaodmosciMouseClicked
 

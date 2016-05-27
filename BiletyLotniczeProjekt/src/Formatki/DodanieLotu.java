@@ -1,5 +1,8 @@
 package Formatki;
 
+import Beany.UzytkownikBean;
+import Wzorce.SingletonUzytkownik;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,11 +15,13 @@ package Formatki;
  */
 public class DodanieLotu extends javax.swing.JFrame {
 
+    UzytkownikBean uzytkownikBean;
     /**
      * Creates new form DodanieLotu
      */
     public DodanieLotu() {
         initComponents();
+        uzytkownikBean = SingletonUzytkownik.pobierzInstancje().pobierzUzytkownik();
     }
 
     /**

@@ -9,6 +9,7 @@ import Beany.AdresBean;
 import Beany.KontaktBean;
 import Beany.UzytkownikBean;
 import Beany.DokumentBean;
+import Wzorce.SingletonUzytkownik;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,6 +29,10 @@ public class Uzytkownicy {
     public static final String UAKTUALNIJ_CZY_ZMINA_HASLA = "UPDATE uzytkownicy SET UZT_CZY_ZMIANA_HASLA=? WHERE UZT_ID=?";
     private final static String POBRANIE_UZYTKOWNIKOW = "SELECT UZT_ID, UZT_LOGIN, UZT_IMIE, UZT_NAZWISKO, UZT_ADRES_EMAIL, UZT_PLEC, UZT_PESEL," +
             "UZT_CZY_ADM, UZT_CZY_BLOKADA, UZT_HASLO, UZT_CZY_ZMIANA_HASLA, UZT_SALDO, UZT_DATA FROM uzytkownicy";
+    private final static String POBRANIE_UZYTKOWNIKOW_BEZ_ADMINOW = "SELECT UZT_ID, UZT_LOGIN, UZT_IMIE, UZT_NAZWISKO, UZT_ADRES_EMAIL, UZT_PLEC, UZT_PESEL," +
+            "UZT_CZY_ADM, UZT_CZY_BLOKADA, UZT_HASLO, UZT_CZY_ZMIANA_HASLA, UZT_SALDO, UZT_DATA FROM uzytkownicy WHERE UZT_CZY_ADM=0";
+     private final static String POBRANIE_ADMINISTRATOROW = "SELECT UZT_ID, UZT_LOGIN, UZT_IMIE, UZT_NAZWISKO, UZT_ADRES_EMAIL, UZT_PLEC, UZT_PESEL," +
+            "UZT_CZY_ADM, UZT_CZY_BLOKADA, UZT_HASLO, UZT_CZY_ZMIANA_HASLA, UZT_SALDO, UZT_DATA FROM uzytkownicy WHERE UZT_CZY_ADM=1";
     private final static String POBRANIE_UZYTKOWNIA_DO_LOGOWANIA = "SELECT UZT_HASLO WHERE UZT_LOGIN = ?";
     private final static String MAKSYMALNE_ID_UZYTKOWNIKA = "SELECT max(`UZT_ID`) FROM `uzytkownicy`";
     private final static String DODAJ_UZYTKOWNIKA = "INSERT INTO `uzytkownicy` (`UZT_LOGIN`, `UZT_IMIE`, `UZT_NAZWISKO`,`UZT_ADRES_EMAIL`, `UZT_PLEC`, `UZT_PESEL`, `UZT_CZY_ADM`, `UZT_CZY_BLOKADA`, `UZT_HASLO`, `UZT_CZY_ZMIANA_HASLA`, `UZT_SALDO`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -93,7 +98,7 @@ public class Uzytkownicy {
         return isInserted;
     }
     
-    private List<UzytkownikBean> pobierzUzytkownikow() throws SQLException
+    public List<UzytkownikBean> pobierzUzytkownikow() throws SQLException
     {
         connection = dbConnector.setConnection();
         List<UzytkownikBean> listaUzytkownikBean = new ArrayList<UzytkownikBean>();
@@ -117,6 +122,53 @@ public class Uzytkownicy {
         return listaUzytkownikBean;
     }
     
+    public List<UzytkownikBean> pobierzUzytkownikowBezAdminow() throws SQLException
+    {
+        connection = dbConnector.setConnection();
+        List<UzytkownikBean> listaUzytkownikBean = new ArrayList<UzytkownikBean>();
+        try
+        {
+            ps = connection.prepareStatement( POBRANIE_UZYTKOWNIKOW_BEZ_ADMINOW );
+            rs = ps.executeQuery();
+            listaUzytkownikBean = narzedziaBazyDanych.ustawUzytkownikow( rs );
+            
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            connection.close();
+            ps.close();
+            rs.close();
+        }
+        return listaUzytkownikBean;
+    }
+    
+    public List<UzytkownikBean> pobierzAdministratorow() throws SQLException
+    {
+        connection = dbConnector.setConnection();
+        List<UzytkownikBean> listaUzytkownikBean = new ArrayList<UzytkownikBean>();
+        try
+        {
+            ps = connection.prepareStatement( POBRANIE_ADMINISTRATOROW );
+            rs = ps.executeQuery();
+            listaUzytkownikBean = narzedziaBazyDanych.ustawUzytkownikow( rs );
+            
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            connection.close();
+            ps.close();
+            rs.close();
+        }
+        return listaUzytkownikBean;
+    }
     
     public List<Object[]> pokazUzytkownikowAdmin() throws SQLException
     {
@@ -142,6 +194,7 @@ public class Uzytkownicy {
         {
             if(((user.getUzytkownikLogin().equals(login) ) || user.getUzytkownikAdresEmail().equals(login)) && (user.getUzytkownikHaslo().equals(haslo) ) ) {
                 zalogowany = true;
+                SingletonUzytkownik.pobierzInstancje().ustawUzytkownik(user);
             }
         }
         return zalogowany;

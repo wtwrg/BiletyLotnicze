@@ -23,20 +23,21 @@ import javax.swing.SwingUtilities;
  *
  * @author Beata
  */
-public class WiadomosciAdministrator extends javax.swing.JFrame {
+public class WiadomosciUzytkownik extends javax.swing.JFrame {
     
     JFrame parentFrame;
     UzytkownikBean uzytkownikBean;
     Wiadomosci wiadomosci;
     Uzytkownicy uzytkownicy;
+    List<UzytkownikBean> listaAdministratorzyBean;
     List<UzytkownikBean> listaUzytkownikowBean;
     List<WiadomoscBean> listaWiadomosciBean;
-    String[] tabUzytkownicy;
+    String[] tabAdministratorzy;
     Object[][] tabWiadomosci;
     /**
      * Creates new form Wiadomosci
      */
-    public WiadomosciAdministrator() throws SQLException {
+    public WiadomosciUzytkownik() throws SQLException {
         initComponents();
         parentFrame = (JFrame)SwingUtilities.getRoot(jPanel1);
         uzytkownikBean = SingletonUzytkownik.pobierzInstancje().pobierzUzytkownik();
@@ -51,22 +52,21 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
         wiadomosci = new Wiadomosci();
         uzytkownicy = new Uzytkownicy();
         
-
         // lista administratorow
-        ustawUzytkownikow(uzytkownicy.pobierzUzytkownikowBezAdminow());
+        ustawAdministratorow(uzytkownicy.pobierzAdministratorow());
         
         // tabela z wiadomosciami
-        ustawTabeleWiadomosci(uzytkownicy.pobierzUzytkownikow(), wiadomosci.pobierzWiadomosci(uzytkownikBean.getUzytkownikID()));
+        ustawTabeleWiadomosci(uzytkownicy.pobierzUzytkownikow(), wiadomosci.pobierzWiadomosci(uzytkownikBean.getUzytkownikID()));   
     }
     
-    private void ustawUzytkownikow(List<UzytkownikBean> listaUzytkownikowBean) {
-        tabUzytkownicy = new String[listaUzytkownikowBean.size()];
-        for( int i = 0; i < listaUzytkownikowBean.size(); i++ ) {
-            tabUzytkownicy[i] = listaUzytkownikowBean.get(i).getUzytkownikImie() + " " + listaUzytkownikowBean.get(i).getUzytkownikNazwisko();
+    private void ustawAdministratorow(List<UzytkownikBean> listaAdministratorzyBean) {
+        tabAdministratorzy = new String[listaAdministratorzyBean.size()];
+        for( int i = 0; i < listaAdministratorzyBean.size(); i++ ) {
+            tabAdministratorzy[i] = listaAdministratorzyBean.get(i).getUzytkownikImie() + " " + listaAdministratorzyBean.get(i).getUzytkownikNazwisko();
         }
-        uzytkownicyL.setModel(new javax.swing.AbstractListModel() {
-            public int getSize() { return tabUzytkownicy.length; }
-            public Object getElementAt(int i) { return tabUzytkownicy[i]; }
+        administratorzyL.setModel(new javax.swing.AbstractListModel() {
+            public int getSize() { return tabAdministratorzy.length; }
+            public Object getElementAt(int i) { return tabAdministratorzy[i]; }
         });
     }
     
@@ -112,10 +112,9 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         wiadomosciT = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
-        uzytkownicyL = new javax.swing.JList<String>();
+        administratorzyL = new javax.swing.JList<String>();
         jScrollPane1 = new javax.swing.JScrollPane();
         trescTA = new javax.swing.JTextArea();
-        wyslijDoWszystkichB = new javax.swing.JButton();
         wyslijB = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         tematTF = new javax.swing.JTextField();
@@ -136,10 +135,6 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
         wiadomosciT.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
             },
             new String [] {
                 "Od", "Do", "Temat", "Treść", "Data"
@@ -147,18 +142,16 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
         ));
         jScrollPane4.setViewportView(wiadomosciT);
 
-        uzytkownicyL.setModel(new javax.swing.AbstractListModel() {
+        administratorzyL.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Osoba 1" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane2.setViewportView(uzytkownicyL);
+        jScrollPane2.setViewportView(administratorzyL);
 
         trescTA.setColumns(20);
         trescTA.setRows(5);
         jScrollPane1.setViewportView(trescTA);
-
-        wyslijDoWszystkichB.setText("Wyślij do wszystkich");
 
         wyslijB.setText("Wyślij");
         wyslijB.addActionListener(new java.awt.event.ActionListener() {
@@ -186,9 +179,7 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jScrollPane1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(wyslijDoWszystkichB, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(wyslijB, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(wyslijB, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(tematTF, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -210,21 +201,19 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tematTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(wyslijDoWszystkichB)
+                        .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(wyslijB))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(wyslijB, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(infoL)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
-        jLabel1.setText("Użytkownicy");
+        jLabel1.setText("Administratorzy");
 
         jLabel4.setText("Wiadomości");
 
@@ -267,7 +256,7 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addComponent(jLabel1)
-                .addGap(88, 88, 88)
+                .addGap(75, 75, 75)
                 .addComponent(jLabel4)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
@@ -284,7 +273,7 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26))
+                .addContainerGap())
         );
 
         pack();
@@ -304,25 +293,24 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenu5MouseClicked
 
     private void wyslijBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wyslijBActionPerformed
-        if(!tematTF.getText().equals("") && !trescTA.equals("") && !uzytkownicyL.isSelectionEmpty()) {
-            int idUzytkownika = 0;
+        if(!tematTF.getText().equals("") && !trescTA.equals("") && !administratorzyL.isSelectionEmpty()) {
+            int idAdmina = 0;
             infoL.setForeground(Color.green);
             infoL.setText("Wiadomosc została wysłana.");
-            
-            for( UzytkownikBean uzytkownik : listaUzytkownikowBean )
+            for( UzytkownikBean admin : listaAdministratorzyBean )
             {
-                if((uzytkownik.getUzytkownikImie() + " " + uzytkownik.getUzytkownikNazwisko()).equals(uzytkownicyL.getSelectedValue())) {
-                    idUzytkownika = uzytkownik.getUzytkownikID();
+                if((admin.getUzytkownikImie() + " " + admin.getUzytkownikNazwisko()).equals(administratorzyL.getSelectedValue())) {
+                    idAdmina = admin.getUzytkownikID();
                 }
             }
             try {
-                wiadomosci.wyslijWiadomosc(uzytkownikBean.getUzytkownikID(), idUzytkownika, tematTF.getText(), trescTA.getText(), "0");
+                wiadomosci.wyslijWiadomosc(uzytkownikBean.getUzytkownikID(), idAdmina, tematTF.getText(), trescTA.getText(), "0");
             } catch (SQLException ex) {
                 Logger.getLogger(WiadomosciUzytkownik.class.getName()).log(Level.SEVERE, null, ex);
             }
             tematTF.setText("");
             trescTA.setText("");
-       } else {
+        } else {
             infoL.setForeground(Color.red);
             infoL.setText("Nie zostały spełnione wszystkie warunki do wysłania wiadomosci.");
         }
@@ -330,6 +318,7 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JList<String> administratorzyL;
     private javax.swing.JLabel infoL;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -348,9 +337,7 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField tematTF;
     private javax.swing.JTextArea trescTA;
-    private javax.swing.JList<String> uzytkownicyL;
     private javax.swing.JTable wiadomosciT;
     private javax.swing.JButton wyslijB;
-    private javax.swing.JButton wyslijDoWszystkichB;
     // End of variables declaration//GEN-END:variables
 }

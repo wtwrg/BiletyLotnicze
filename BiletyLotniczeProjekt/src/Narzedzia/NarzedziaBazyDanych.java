@@ -6,6 +6,7 @@ import Beany.LotniskoBean;
 import Beany.LotBean;
 import Beany.RezerwacjaBean;
 import Beany.UzytkownikBean;
+import Beany.WiadomoscBean;
 import Beany.ZakupBean;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -160,6 +161,33 @@ public class NarzedziaBazyDanych
             e.printStackTrace();
         }
         return listaRezerwacjiBean;
+    }
+    
+    public List<WiadomoscBean> ustawWiadomosci ( ResultSet rs )
+    {
+        List<WiadomoscBean> listaWiadomosciBean = new ArrayList<WiadomoscBean>();
+        try
+        {
+            while( rs.next() )
+            {
+                WiadomoscBean wiadomoscBean = new WiadomoscBean();
+                
+                wiadomoscBean.setWiadomoscID(rs.getInt( 1 ) );
+                wiadomoscBean.setWiadomoscIDOdbiorcy(rs.getInt(2));
+                wiadomoscBean.setWiadomoscIDNadawcy(rs.getInt(3));
+                wiadomoscBean.setWiadomoscTemat(rs.getString(4));
+                wiadomoscBean.setWiadomoscTresc(rs.getString(5));
+                wiadomoscBean.setWiadomoscData(rs.getDate(6));
+                wiadomoscBean.setWiadomoscTyp(rs.getString(7));
+                
+                listaWiadomosciBean.add( wiadomoscBean );
+            }
+        }
+        catch( SQLException e )
+        {
+            e.printStackTrace();
+        }
+        return listaWiadomosciBean;
     }
     
     public List<UzytkownikBean> ustawUzytkownikow( ResultSet rs )
