@@ -53,10 +53,13 @@ public class WiadomosciUzytkownik extends javax.swing.JFrame {
         uzytkownicy = new Uzytkownicy();
         
         // lista administratorow
-        ustawAdministratorow(uzytkownicy.pobierzAdministratorow());
+        listaAdministratorzyBean = uzytkownicy.pobierzAdministratorow();
+        ustawAdministratorow(listaAdministratorzyBean);
         
         // tabela z wiadomosciami
-        ustawTabeleWiadomosci(uzytkownicy.pobierzUzytkownikow(), wiadomosci.pobierzWiadomosci(uzytkownikBean.getUzytkownikID()));   
+        listaUzytkownikowBean = uzytkownicy.pobierzUzytkownikow();
+        listaWiadomosciBean = wiadomosci.pobierzWiadomosci(uzytkownikBean.getUzytkownikID());
+        ustawTabeleWiadomosci(listaUzytkownikowBean, listaWiadomosciBean);   
     }
     
     private void ustawAdministratorow(List<UzytkownikBean> listaAdministratorzyBean) {
@@ -84,7 +87,7 @@ public class WiadomosciUzytkownik extends javax.swing.JFrame {
                 }
             }
             tabWiadomosci[i][2] = listaWiadomosciBean.get(i).getWiadomoscTemat();
-            if(listaWiadomosciBean.get(i).getWiadomoscTyp().equals(0)) {
+            if(listaWiadomosciBean.get(i).getWiadomoscTyp().equals("0")) {
                 tabWiadomosci[i][3] = listaWiadomosciBean.get(i).getWiadomoscTresc();
             } else {
                 tabWiadomosci[i][3] = wiadomosci.pobierzWiadomoscPoTypie(listaWiadomosciBean.get(i).getWiadomoscTyp());
@@ -184,7 +187,7 @@ public class WiadomosciUzytkownik extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE)))
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 818, Short.MAX_VALUE)))
                         .addGap(23, 23, 23))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
@@ -267,7 +270,7 @@ public class WiadomosciUzytkownik extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(52, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel4))

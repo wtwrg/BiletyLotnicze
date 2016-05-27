@@ -30,6 +30,7 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
     Wiadomosci wiadomosci;
     Uzytkownicy uzytkownicy;
     List<UzytkownikBean> listaUzytkownikowBean;
+    List<UzytkownikBean> listaUzytkownikowBeanBezAdminow;
     List<WiadomoscBean> listaWiadomosciBean;
     String[] tabUzytkownicy;
     Object[][] tabWiadomosci;
@@ -53,10 +54,13 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
         
 
         // lista administratorow
-        ustawUzytkownikow(uzytkownicy.pobierzUzytkownikowBezAdminow());
+        listaUzytkownikowBeanBezAdminow = uzytkownicy.pobierzUzytkownikowBezAdminow();
+        ustawUzytkownikow(listaUzytkownikowBeanBezAdminow);
         
         // tabela z wiadomosciami
-        ustawTabeleWiadomosci(uzytkownicy.pobierzUzytkownikow(), wiadomosci.pobierzWiadomosci(uzytkownikBean.getUzytkownikID()));
+        listaUzytkownikowBean = uzytkownicy.pobierzUzytkownikow();
+        listaWiadomosciBean = wiadomosci.pobierzWiadomosci(uzytkownikBean.getUzytkownikID());
+        ustawTabeleWiadomosci(listaUzytkownikowBean, listaWiadomosciBean);
     }
     
     private void ustawUzytkownikow(List<UzytkownikBean> listaUzytkownikowBean) {
@@ -72,7 +76,6 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
     
     private void ustawTabeleWiadomosci(List<UzytkownikBean> listaUzytkownikowBean, List<WiadomoscBean> listaWiadomosciBean) {
         tabWiadomosci = new Object[listaWiadomosciBean.size()][5];
-        System.out.println(listaWiadomosciBean.size());
         for( int i = 0; i < listaWiadomosciBean.size(); i++ ) {
             for( UzytkownikBean user : listaUzytkownikowBean )
             {
@@ -84,7 +87,7 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
                 }
             }
             tabWiadomosci[i][2] = listaWiadomosciBean.get(i).getWiadomoscTemat();
-            if(listaWiadomosciBean.get(i).getWiadomoscTyp().equals(0)) {
+            if(listaWiadomosciBean.get(i).getWiadomoscTyp().equals("0")) {
                 tabWiadomosci[i][3] = listaWiadomosciBean.get(i).getWiadomoscTresc();
             } else {
                 tabWiadomosci[i][3] = wiadomosci.pobierzWiadomoscPoTypie(listaWiadomosciBean.get(i).getWiadomoscTyp());
@@ -159,6 +162,11 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
         jScrollPane1.setViewportView(trescTA);
 
         wyslijDoWszystkichB.setText("Wyślij do wszystkich");
+        wyslijDoWszystkichB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                wyslijDoWszystkichBActionPerformed(evt);
+            }
+        });
 
         wyslijB.setText("Wyślij");
         wyslijB.addActionListener(new java.awt.event.ActionListener() {
@@ -193,7 +201,7 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE)))
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 829, Short.MAX_VALUE)))
                         .addGap(23, 23, 23))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
@@ -278,7 +286,7 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(36, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel4))
@@ -327,6 +335,29 @@ public class WiadomosciAdministrator extends javax.swing.JFrame {
             infoL.setText("Nie zostały spełnione wszystkie warunki do wysłania wiadomosci.");
         }
     }//GEN-LAST:event_wyslijBActionPerformed
+
+    private void wyslijDoWszystkichBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wyslijDoWszystkichBActionPerformed
+        if(!tematTF.getText().equals("") && !trescTA.equals("")) {
+            int idUzytkownika = 0;
+            infoL.setForeground(Color.green);
+            infoL.setText("Wiadomosc została wysłana.");
+            
+            for( UzytkownikBean uzytkownik : listaUzytkownikowBeanBezAdminow )
+            {
+                try {
+                    wiadomosci.wyslijWiadomosc(uzytkownikBean.getUzytkownikID(), uzytkownik.getUzytkownikID(), tematTF.getText(), trescTA.getText(), "0");
+                } catch (SQLException ex) {
+                    Logger.getLogger(WiadomosciUzytkownik.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
+            tematTF.setText("");
+            trescTA.setText("");
+       } else {
+            infoL.setForeground(Color.red);
+            infoL.setText("Nie zostały spełnione wszystkie warunki do wysłania wiadomosci.");
+        }
+    }//GEN-LAST:event_wyslijDoWszystkichBActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
